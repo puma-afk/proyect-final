@@ -65,6 +65,14 @@ Route::get('/nombres', function () {
     return view('nombres'); 
 })->name('nombres');
 
+Route::get('/modulo1', function (){
+    return view('modulo 1 Captura');
+})->name('modulo1');
+
+Route::post('/subirImagen',['App\Http\Controllers\DeteccionController'::class,'detectar'])->name('deteccionController');
+
+Route::post('/detectarCola',['App\Http\Controllers\ColaController'::class,'procesar'])->name('detectar.humanos');
+
 Route::get('/operacion1', function () {
     return view('operacion1');
 })->name('operacion1');
