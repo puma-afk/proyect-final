@@ -90,6 +90,11 @@ Route::get('/modulo2', function () {
     return view('modulo2');
 })->name('modulo2');
 
+Route::get('/perfil', function () {
+    return view('perfil'); 
+})->name('perfil'); 
+
+
 Route::post('/api/voice-gesture-command', [VoiceGestureController::class, 'processCommand']);
 
 
