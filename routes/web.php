@@ -73,6 +73,8 @@ Route::post('/subirImagen',['App\Http\Controllers\DeteccionController'::class,'d
 
 Route::post('/detectarCola',['App\Http\Controllers\ColaController'::class,'procesar'])->name('detectar.humanos');
 
+Route::post('/borrarTodo',['App\Http\Controllers\ColaController'::class,'borrar'])->name('borrar.todo');
+
 Route::get('/operacion1', function () {
     return view('operacion1');
 })->name('operacion1');

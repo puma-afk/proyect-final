@@ -20,7 +20,6 @@ class PriorityQueue implements PriorityQueueInterface
        $this->algorithm = $algorithm;
 
         if (!file_exists($this->filePath)) {
-            // Crea archivo JSON vacío
             file_put_contents($this->filePath, json_encode([
                 'queue' => [],
                 'num_elements' => 0,
@@ -38,7 +37,7 @@ class PriorityQueue implements PriorityQueueInterface
             'num_elements'=>$this->num_elements,
             'hashmap'=>$this->hashmap
 
-        ]));
+        ], JSON_PRETTY_PRINT));
     }
 
     
@@ -55,14 +54,12 @@ class PriorityQueue implements PriorityQueueInterface
         $data = json_decode($content, true);
 
         if (!is_array($data)) {
-            // Archivo corrupto o vacío
             $this->queue = [];
             $this->num_elements = 0;
             $this->hashmap = [];
             return;
         }
 
-        // Ya podemos acceder sin miedo
         $this->queue = $data['queue'] ?? [];
         $this->num_elements = $data['num_elements'] ?? 0;
         $this->hashmap = $data['hashmap'] ?? [];
@@ -82,19 +79,15 @@ class PriorityQueue implements PriorityQueueInterface
 
     public function push($element, $priority): bool
     {
-        if ($this->isEmpty()) {
-            $this->num_elements                              = 1;
-            $this->queue[1]['element']                       = $element;
-            $this->queue[1]['priority']                      = $priority;
-            $this->queue[1]['timestamp']                     = time();
-            $this->hashmap[hash($this->algorithm, serialize($element))] = 1;
-            $this->save();
-            return true;
-        }
-
         $this->num_elements++;
+        $this->queue[$this->num_elements]=[
+            'elemento' => $element,
+            'prioridad' => $priority,
+            'timestamp' => time()
+        ];
 
-        $this->up_heap($element, $this->num_elements, $priority);
+        $this->hashmap[hash($this->algorithm, serialize($element))] = $this->num_elements;
+
 
         $this->save();
 
@@ -103,71 +96,50 @@ class PriorityQueue implements PriorityQueueInterface
 
 
     public function pop()
-    //creo q marca error
+
     {   
         if ($this->isEmpty()) {
             throw new EmptyQueueException("Queue is empty");
         }
 
         $first_element = $this->queue[1];
-        $last_element  = $this->queue[$this->num_elements];
 
+        unset($this->hashmap[hash($this->algorithm, serialize($first_element['elemento']))]);
+
+        unset($this->queue[1]);
         $this->num_elements--;
-        array_pop($this->queue);
 
-        unset($this->hashmap[hash($this->algorithm, serialize($first_element['element']))]);
+        $this->queue = array_values($this->queue);
 
-        $this->down_heap($last_element['element'], 1, $last_element['priority']);
+        $new_queue = [];
+        $new_hashmap = [];
+        $count=1;
+
+        foreach ($this->queue as $item) {
+            $new_queue[$count] = $item;
+            $new_hashmap[hash($this->algorithm, serialize($item['elemento']))] = $count;
+            $count++;
+        }
+
+        $this->queue=$new_queue;
+        $this->hashmap = $new_hashmap;
 
         $this->save();
 
-        return $first_element['element'];
+        return $first_element['elemento'];
     }
 
 
     public function change_priority($element, $new_priority): bool
     {
-        $pos = $this->hashmap[hash($this->algorithm, serialize($element))];
-
-        if ($pos) {
-            if (($pos == 1) && ($this->queue[$pos]['priority'] < $new_priority)) {
-                $this->down_heap($element, $pos, $new_priority);
-                return true;
-            } else if (($pos == 1) && ($this->queue[$pos]['priority'] > $new_priority)) {
-                return true;
-
-
-            } else if (($pos == $this->num_elements) && ($this->queue[$pos]['priority'] > $new_priority)) {
-                $this->up_heap($element, $pos, $new_priority);
-                return true;
-            } else if (($pos == $this->num_elements) && ($this->queue[$pos]['priority'] < $new_priority)) {
-                return true;
-
-
-            } else {
-                $fathers_position = intdiv($pos, 2);
-
-                if ($new_priority < $this->queue[$fathers_position]['priority']) {
-                    $this->up_heap($element, $pos, $new_priority);
-                } else {
-                    $this->down_heap($element, $pos, $new_priority);
-                }
-
-                return true;
-            }
-
-        } else {
-            return false;
-        }
+        return false;
     }
 
     public function purge(): void
     {
-        array_splice($this->queue, 0);
+        $this->queue = [];
         $this->num_elements = 0;
-
-        array_splice($this->hashmap, 0);
-
+        $this->hashmap = [];
         $this->save();
     }
 
@@ -176,74 +148,10 @@ class PriorityQueue implements PriorityQueueInterface
         return $this->num_elements;
     }
 
-
-    private function down_heap($element, $pos, $priority): void
-    {
-        $top      = $pos;
-        $tops_son = $top * 2;
-
-        if (($tops_son < $this->num_elements) && ($this->queue[$tops_son+1]['priority'] < $this->queue[$tops_son]['priority'])) {
-            $tops_son++;
-        }
-
-        while (($tops_son < $this->num_elements) && ($this->queue[$tops_son]['priority'] < $priority)) {
-            $this->queue[$top] = $this->queue[$tops_son];
-            $this->hashmap[hash($this->algorithm, $this->queue[$top]['element'])] = $top;
-
-            $top               = $tops_son;
-            $tops_son          = $top * 2;
-
-            if (($tops_son < $this->num_elements) && ($this->queue[$tops_son+1]['priority'] < $this->queue[$tops_son]['priority'])) {
-                $tops_son++;
-            }
-        }
-
-        $this->queue[$top]['element']   = $element;
-        $this->queue[$top]['priority']  = $priority;
-        $this->queue[$top]['timestamp'] = time();
-        $this->hashmap[hash($this->algorithm, serialize($element))] = $top;
-
-        $this->hashmap[hash($this->algorithm, serialize($this->queue[$pos]['element']))] = $pos;
-    }
-
-
-    private function up_heap($element, $pos, $priority)
-    {
-        $next_position    = $pos;        //Pointer to the next free position in the queue.
-        $fathers_position = intdiv($next_position, 2);  //Obtain father's position of the new element.
-
-        while (($fathers_position > 0) &&
-               ($this->queue[$fathers_position]['priority'] > $priority)) {
-            $this->queue[$next_position] = $this->queue[$fathers_position];
-            $this->hashmap[hash($this->algorithm, $this->queue[$next_position]['element'])] = $next_position;
-
-            $next_position               = $fathers_position;
-            $fathers_position            = intdiv($next_position, 2);
-        }
-
-        $this->queue[$next_position]['element']   = $element;
-        $this->queue[$next_position]['priority']  = $priority;
-        $this->queue[$next_position]['timestamp'] = time();
-        $this->hashmap[hash($this->algorithm, serialize($element))] = $next_position;
-
-        $this->hashmap[hash($this->algorithm, serialize($this->queue[$pos]['element']))] = $pos;
-    }
-
-    private function getPosition($element)
-    {
-        $position = hash($this->algorithm, serialize($element));
-        if (isset($this->hashmap[$position])) {
-            return $this->hashmap[$position];
-        } else {
-            return false;
-        }
-    }
-
-
     public function print(): void
     {
         for ($i=1; $i<=$this->num_elements; $i++) {
-            echo $i." - ".$this->queue[$i]['priority']." - ".$this->queue[$i]['element']."\n";
+            echo $i." - ".$this->queue[$i]['prioridad']." - ".$this->queue[$i]['elemento']."\n";
         }
     }
 }

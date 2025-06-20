@@ -112,12 +112,18 @@
                 <button type="submit" class="btn">Detectar Personas</button>
             </form>
 
+            <a class='btn' href="{{ route('perfil')}}">Atras</a>
+
         </div>
 
-        @if(session('cantidad'))
+        @if(session()->has('cantidad'))
             <div class="status-display">
                 Personas Detectadas: <span id="currentGesture"><strong>{{ session('cantidad') }}</strong></span>
             </div>
+            <form action="{{ route('borrar.todo') }}" method="POST" style="margin-top: 1em;">
+                @csrf
+                <button type="submit" class="btn btn-danger">Borrar todo</button>
+            </form>
         @endif
     </div>
 
@@ -130,7 +136,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 preview.src = e.target.result;
-                preview.style.display = 'block';
+                preview.style.display = 'inline';
             };
             reader.readAsDataURL(file);
         }
