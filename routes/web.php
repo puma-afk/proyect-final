@@ -95,52 +95,20 @@ Route::get('/modulo2', function () {
 Route::get('/perfil', function () {
     return view('perfil'); 
 })->name('perfil'); 
+// comandos de vos
+Route::get('/voice-routes', function() {
+    return response()->json([
+        'home' => route('perfil'),
+        'datos' => route('nombres'),
+        'modulo1' => route('modulo1'),
+        'modulo2' => route('modulo2')
+    ]);
+});
 
 
 Route::post('/api/voice-gesture-command', [VoiceGestureController::class, 'processCommand']);
 
 
-// ===== routes/web.php =====
 
-
-// Ruta principal para mostrar la página de control
-Route::get('/voice-gesture-control', [VoiceGestureController::class, 'index'])
-    ->name('voice.gesture.control');
-
-// Ruta para obtener configuración del sistema
-Route::get('/voice-gesture-config', [VoiceGestureController::class, 'getSystemConfig'])
-    ->name('voice.gesture.config');
-
-// Ruta para estadísticas (opcional, requiere autenticación)
-Route::get('/voice-gesture-stats', [VoiceGestureController::class, 'getCommandStats'])
-    ->middleware('auth')
-    ->name('voice.gesture.stats');
-
-
-// ===== routes/api.php =====
-
-
-
-// API principal para recibir comandos de voz y gestos
-Route::post('/voice-gesture-command', [VoiceGestureController::class, 'processCommand'])
-    ->name('api.voice.gesture.command');
-
-// API para obtener configuración (sin autenticación)
-Route::get('/voice-gesture-config', [VoiceGestureController::class, 'getSystemConfig'])
-    ->name('api.voice.gesture.config');
-
-// APIs adicionales con autenticación (opcional)
-Route::middleware('auth:sanctum')->group(function () {
-    
-    // Estadísticas de comandos del usuario
-    Route::get('/voice-gesture-stats', [VoiceGestureController::class, 'getCommandStats']);
-    
-    // Historial de comandos del usuario
-    Route::get('/voice-gesture-history', function() {
-        // Implementar si necesitas historial
-        return response()->json(['message' => 'Historial de comandos']);
-    });
-    
-});
 
  

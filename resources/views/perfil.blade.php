@@ -367,6 +367,7 @@
             }
         }
     </style>
+    
 </head>
 <body>
 
@@ -403,9 +404,9 @@
                          <li><a class="dropdown-item" href="{{ route('modulo1')}}"><i class="fas fa-images me-2"></i>Modulo 1 Captura</a></li>
                          <li><a class="dropdown-item" href="{{ route('operacion1') }}"><i class="fas fa-info-circle me-2"></i> Modulo 2 Gestos</a></li>
                          <li><a class="dropdown-item" href="{{ route('modulo2') }}"><i class="fas fa-newspaper me-2"></i> Modulo 2 Voz</a></li>
-                        <li><a class="dropdown-item" href="{{ route('operacion3') }}"><i class="fas fa-images me-2"></i> Operación 3</a></li>
+                        <li><a class="dropdown-item" href="{{ route('operacion3') }}"><i class="fas fa-images me-2"></i> estadisticas</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-question-circle me-2"></i> Ayuda</a></li>
+                        <li><a class="dropdown-item" href="{{ route('operacion2') }}"><i class="fas fa-images me-2"></i> Ayuda</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -564,6 +565,7 @@
     </section>
 
     <div class="blue-stripe"></div>
+   
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -575,187 +577,9 @@
             });
         });
     </script>
-    <script>
-// Clase para manejar el reconocimiento de voz global
-class VoiceRecognition {
-    constructor() {
-        this.recognition = null;
-        this.isListening = false;
-        this.init();
-    }
+   @include('vistas-globales.vos-iu')
+@include('vistas-globales.vos-comandos') 
+<script src="{{ asset('voiceRecognition.js') }}"></script>
 
-    init() {
-        if (window.SpeechRecognition || window.webkitSpeechRecognition) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            this.recognition = new SpeechRecognition();
-            
-            this.recognition.continuous = true;
-            this.recognition.interimResults = true;
-            this.recognition.lang = 'es-ES';
-            
-            this.bindEvents();
-            
-            // Verificar si estaba activo antes de recargar
-            if (localStorage.getItem('voiceRecognitionActive') === 'true') {
-                this.start();
-            }
-        }
-    }
-
-    bindEvents() {
-        this.recognition.onresult = (event) => {
-            const transcript = Array.from(event.results)
-                .map(result => result[0])
-                .map(result => result.transcript)
-                .join('')
-                .toLowerCase();
-            
-            this.processCommand(transcript);
-        };
-
-        this.recognition.onerror = (event) => {
-            console.error('Error:', event.error);
-            if (event.error === 'no-speech') {
-                this.restart();
-            }
-        };
-
-        this.recognition.onend = () => {
-            if (this.isListening) {
-                this.restart();
-            }
-        };
-    }
-
-    processCommand(transcript) {
-        console.log("Comando detectado:", transcript);
-        
-        // Comandos de navegación (ejemplos)
-        if (transcript.includes('ir a inicio')) {
-            window.location.href = '/';
-        } else if (transcript.includes('ir a datos')) {
-            window.location.href = "{{ route('nombres') }}";
-        } else if (transcript.includes('ir a módulo 1')) {
-            window.location.href = "{{ route('modulo1') }}";
-        }
-        // Agrega más comandos según necesites
-    }
-
-    start() {
-        if (!this.isListening && this.recognition) {
-            this.recognition.start();
-            this.isListening = true;
-            localStorage.setItem('voiceRecognitionActive', 'true');
-            this.updateUI();
-            console.log("Reconocimiento de voz activado");
-        }
-    }
-
-    stop() {
-        if (this.isListening && this.recognition) {
-            this.recognition.stop();
-            this.isListening = false;
-            localStorage.setItem('voiceRecognitionActive', 'false');
-            this.updateUI();
-            console.log("Reconocimiento de voz desactivado");
-        }
-    }
-
-    restart() {
-        if (this.isListening && this.recognition) {
-            this.recognition.start();
-        }
-    }
-
-    updateUI() {
-        const voiceBtn = document.getElementById('voiceSearchBtn');
-        if (voiceBtn) {
-            if (this.isListening) {
-                voiceBtn.classList.add('listening');
-                voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
-            } else {
-                voiceBtn.classList.remove('listening');
-                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-            }
-        }
-        
-        // Actualizar también el botón flotante si existe
-        const globalBtn = document.getElementById('globalVoiceBtn');
-        if (globalBtn) {
-            globalBtn.innerHTML = this.isListening 
-                ? '<i class="fas fa-microphone-slash"></i> Desactivar Voz' 
-                : '<i class="fas fa-microphone"></i> Activar Voz';
-            
-            globalBtn.className = this.isListening 
-                ? 'btn btn-danger' 
-                : 'btn btn-outline-light';
-        }
-    }
-}
-
-// Inicialización cuando el DOM está listo
-document.addEventListener('DOMContentLoaded', () => {
-    // Crear instancia global
-    if (!window.voiceRecognition) {
-        window.voiceRecognition = new VoiceRecognition();
-    }
-    
-    // Crear botón flotante de control global
-    const createGlobalButton = () => {
-        const existingBtn = document.getElementById('globalVoiceBtn');
-        if (existingBtn) return;
-        
-        const voiceBtn = document.createElement('button');
-        voiceBtn.id = 'globalVoiceBtn';
-        voiceBtn.className = 'btn btn-outline-light';
-        voiceBtn.innerHTML = '<i class="fas fa-microphone"></i> Activar Voz';
-        voiceBtn.style.position = 'fixed';
-        voiceBtn.style.bottom = '20px';
-        voiceBtn.style.right = '20px';
-        voiceBtn.style.zIndex = '9999';
-        
-        voiceBtn.addEventListener('click', () => {
-            if (window.voiceRecognition.isListening) {
-                window.voiceRecognition.stop();
-            } else {
-                window.voiceRecognition.start();
-            }
-        });
-        
-        document.body.appendChild(voiceBtn);
-    };
-    
-    createGlobalButton();
-    
-    // Manejar el botón de búsqueda por voz
-    const voiceSearchBtn = document.getElementById('voiceSearchBtn');
-    if (voiceSearchBtn) {
-        voiceSearchBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (window.voiceRecognition.isListening) {
-                window.voiceRecognition.stop();
-            } else {
-                window.voiceRecognition.start();
-                document.getElementById('searchInput').focus();
-            }
-        });
-    }
-    
-    // Manejar el formulario de búsqueda
-    const searchForm = document.getElementById('searchForm');
-    if (searchForm) {
-        searchForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Aquí puedes agregar lógica para manejar la búsqueda
-            console.log("Búsqueda realizada:", document.getElementById('searchInput').value);
-        });
-    }
-    
-    // Actualizar UI según el estado inicial
-    if (window.voiceRecognition) {
-        window.voiceRecognition.updateUI();
-    }
-});
-</script>
 </body>
 </html>

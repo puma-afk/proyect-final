@@ -97,5 +97,8 @@
             </button>
         </form>
     </div>
+     @include('vistas-globales.vos-iu')
+    @include('vistas-globales.vos-comandos') 
+    <script src="{{ asset('voiceRecognition.js') }}"></script>
 </body>
 </html>
