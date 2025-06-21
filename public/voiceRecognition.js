@@ -231,15 +231,36 @@ class VoiceRecognition {
             case 'start':
                 this.start();
                 break;
-            case 'logout':
+            case 'login':
                 this.handleLogout();
                 break;
 
              case 'scroll_down':
-                this.scrollPage('down'); // Llama al método de scroll hacia abajo
+                this.scrollPage('down'); 
                 break;
             case 'scroll_up':
-                this.scrollPage('up');   // Llama al método de scroll hacia arriba
+                this.scrollPage('up');   
+                break;
+            case 'click-select':
+                this.simulacionBotonClick('fileLabel', "selecionando imagen");
+                break;
+            case 'click-subir':
+                this.simulacionBotonClick('uploadBtn', "subiendo imagen");
+                break;
+            case 'click-detectar':
+                this.simulacionBotonClick('detectBtn', "inicando detectar personas");
+                break;
+            case 'click-atras':
+                this.simulacionBotonClick('backBtn', "regresando");
+                break;
+            case 'click-borrar':
+                this.simulacionBotonClick('deleteBtn', "borrando");
+                break;
+            case 'click-next':
+                this.simulacionBotonClick('carouselNext', "mostrando siguiente imagen");
+                break;
+            case 'click-prev':
+                this.simulacionBotonClick('carouselPrev', "imagen anterior");
                 break;
             default:
                 console.warn("Acción no reconocida:", action);
@@ -247,6 +268,18 @@ class VoiceRecognition {
                 break;
         }
     }
+    simulacionBotonClick(buttonId, feedbackMessage = "Activando botón...") {
+        this.showFeedbackNotification(feedbackMessage);
+        const button = document.getElementById(buttonId);
+        if (button) {
+            button.click(); 
+            console.log(`Clic simulado en el botón con ID: ${buttonId}`);
+        } else {
+            console.warn(`Botón con ID "${buttonId}" no encontrado.`);
+            this.showErrorNotification(`Botón "${buttonId}" no encontrado.`);
+        }
+    }
+
 
     navigateTo(url) {
         if (url) {
@@ -258,34 +291,35 @@ class VoiceRecognition {
     }
 
     handleLogout() {
-        const logoutUrl = window.voiceConfig.actions.logout;
-        if (logoutUrl) {
-            // Crear un formulario temporal para enviar una solicitud POST
-            const form = document.createElement('form');
-            form.action = logoutUrl;
-            form.method = 'POST';
-            // Laravel requiere un token CSRF para solicitudes POST
-            const csrfToken = document.querySelector('meta[name="csrf-token"]');
-            if (csrfToken) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = '_token';
-                input.value = csrfToken.content;
-                form.appendChild(input);
-            } else {
-                console.warn("Meta tag CSRF no encontrado. El logout POST podría fallar.");
-            }
-            document.body.appendChild(form);
-            form.submit();
+    const logoutUrl = window.voiceConfig.actions.logout; 
+    if (logoutUrl) {
+
+        const form = document.createElement('form');
+        form.action = logoutUrl;
+        form.method = 'POST'; 
+
+        
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+        if (csrfToken) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = '_token';
+            input.value = csrfToken.content;
+            form.appendChild(input);
         } else {
-            console.error("URL de logout no definida.");
-            this.showErrorNotification("No se pudo realizar el cierre de sesión.");
+            console.warn("Meta tag CSRF no encontrado. El logout POST podría fallar.");
         }
+        document.body.appendChild(form);
+        form.submit(); 
+    } else {
+        console.error("URL de logout no definida.");
+        this.showErrorNotification("No se pudo realizar el cierre de sesión.");
     }
+}
 
     updateVoiceButtonState(isListening) {
         const voiceBtn = document.getElementById('globalVoiceBtn');
-        const searchVoiceBtn = document.getElementById('searchVoiceBtn'); // Si existe
+        const searchVoiceBtn = document.getElementById('searchVoiceBtn'); 
 
         if (voiceBtn) {
             voiceBtn.innerHTML = isListening
@@ -346,6 +380,7 @@ class VoiceRecognition {
     }
 }
 
+
 // Inicialización segura
 document.addEventListener('DOMContentLoaded', () => {
     try {
@@ -354,6 +389,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } catch (error) {
         console.error("Error al inicializar la instancia de VoiceRecognition en DOMContentLoaded:", error);
-        // Podrías añadir una notificación al usuario si no se pudo inicializar la API
+        
     }
 });

@@ -297,11 +297,13 @@
     <div class="container">
         <div class="header">
             <h1>Control de Voz</h1>
-            <p>Interfaz minimalista con procesamiento secuencial</p>
+            
         </div>
         <div class="navigation">
-            <div class="nav-btn active">Control de voz</div>
-            <a href="#" class="nav-btn" id="gestureNavBtn">Control de gestos</a>
+            <button class="nav-btn active" id="voiceControlBtn">Control de voz</button>
+            <button onclick="window.location.href='{{ route('operacion1') }}'" class="nav-btn" id="gestureControlBtn">
+    Control de gestos
+</button> 
         </div>
         <div id="errorContainer" class="error-message"></div>
         <div class="main-content">
@@ -323,37 +325,37 @@
                 <div class="commands-panel">
                     <h3>Comandos Disponibles</h3>
                     <div class="command-list">
-                        <div class="command-item" onclick="testCommand('hola')">
+                        <div class="command-item" onclick="testCommand('hola')" id="helloCommand">
                             <div>
                                 <div class="command-phrase">"Hola"</div>
                                 <div class="command-description">Saludos iniciales</div>
                             </div>
                         </div>
-                        <div class="command-item" onclick="testCommand('ayuda')">
+                        <div class="command-item" onclick="testCommand('ayuda')" id="helpCommand">
                             <div>
                                 <div class="command-phrase">"Ayuda"</div>
                                 <div class="command-description">Información de comandos</div>
                             </div>
                         </div>
-                        <div class="command-item" onclick="testCommand('adiós')">
+                        <div class="command-item" onclick="testCommand('adiós')" id="goodbyeCommand">
                             <div>
                                 <div class="command-phrase">"Adiós"</div>
                                 <div class="command-description">Despedida</div>
                             </div>
                         </div>
-                        <div class="command-item" onclick="testCommand('página principal')">
+                        <div class="command-item" onclick="testCommand('página principal')" id="homeCommand">
                             <div>
                                 <div class="command-phrase">"Página principal"</div>
                                 <div class="command-description">Ir al inicio</div>
                             </div>
                         </div>
-                        <div class="command-item" onclick="testCommand('atrás')">
+                        <div class="command-item" onclick="testCommand('atrás')" id="backCommand">
                             <div>
                                 <div class="command-phrase">"Atrás"</div>
                                 <div class="command-description">Navegación hacia atrás</div>
                             </div>
                         </div>
-                        <div class="command-item" onclick="testCommand('ir a gestos')">
+                        <div class="command-item" onclick="testCommand('ir a gestos')" id="gestureCommand">
                             <div>
                                 <div class="command-phrase">"Ir a gestos"</div>
                                 <div class="command-description">Cambiar el control por gestos</div>
@@ -409,7 +411,8 @@
         const logContainer = document.getElementById('logContainer');
         const errorContainer = document.getElementById('errorContainer');
         const micIcon = document.getElementById('micIcon');
-        const gestureNavBtn = document.getElementById('gestureNavBtn');
+        const voiceControlBtn = document.getElementById('voiceControlBtn');
+        const gestureControlBtn = document.getElementById('gestureControlBtn');
         const voiceStatus = document.getElementById('voiceStatus');
         const processingStatus = document.getElementById('processingStatus');
 
@@ -700,9 +703,13 @@
                 }
             });
 
-            gestureNavBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                showGestureControl();
+            gestureControlBtn.addEventListener('click', (e) => {
+                 log('Iniciando redirección a control por gestos', 'system');
+            
+            });
+
+            voiceControlBtn.addEventListener('click', () => {
+                log('Botón de control de voz clickeado', 'system');
             });
 
             // Atajos de teclado
@@ -741,11 +748,6 @@
             processVoiceCommand(command);
         }
 
-        // Mostrar control por gestos (simulado)
-        function showGestureControl() {
-            alert('Redirigiendo al Control por Gestos...\n\nEn una implementación real, esto cargaría la página de gestos.');
-            log('Redirección a control por gestos', 'system');
-        }
 
         // Utilidades
         function updateStatus(elementId, value) {

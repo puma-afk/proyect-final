@@ -84,8 +84,6 @@
             font-size: 16px;
         }
 
-
-
     </style>
 </head>
 <body>
@@ -100,29 +98,28 @@
         </div>
 
         <div class="controls">
-            <form action="{{ route('deteccionController') }}" method="POST" enctype="multipart/form-data">
+            <form id="uploadForm" action="{{ route('deteccionController') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <label class="input-file-label" for="imagen">Seleccionar imagen</label>
+                <label id="fileLabel" class="input-file-label" for="imagen">Seleccionar imagen</label>
                 <input type="file" name="imagen" id="imagen" accept="image/*" required style="display:none;" onchange="mostrarVistaPrevia(event)">
-                <button type="submit" class="btn">Subir Imagen</button>
+                <button type="submit" id="uploadBtn" class="btn">Subir Imagen</button>
             </form>
 
-            <form action="{{ route('detectar.humanos') }}" method="POST">
+            <form id="detectionForm" action="{{ route('detectar.humanos') }}" method="POST">
                 @csrf
-                <button type="submit" class="btn">Detectar Personas</button>
+                <button type="submit" id="detectBtn" class="btn">Detectar Personas</button>
             </form>
 
-            <a class='btn' href="{{ route('perfil')}}">Atras</a>
-
+            <a id="backBtn" class='btn' href="{{ route('perfil')}}">Atras</a>
         </div>
 
         @if(session()->has('cantidad'))
-            <div class="status-display">
-                Personas Detectadas: <span id="currentGesture"><strong>{{ session('cantidad') }}</strong></span>
+            <div id="statusDisplay" class="status-display">
+                Personas Detectadas: <span id="detectionCount"><strong>{{ session('cantidad') }}</strong></span>
             </div>
-            <form action="{{ route('borrar.todo') }}" method="POST" style="margin-top: 1em;">
+            <form id="deleteForm" action="{{ route('borrar.todo') }}" method="POST" style="margin-top: 1em;">
                 @csrf
-                <button type="submit" class="btn btn-danger">Borrar todo</button>
+                <button type="submit" id="deleteBtn" class="btn btn-danger">Borrar todo</button>
             </form>
         @endif
 
@@ -156,24 +153,21 @@
 
    <script>
         function mostrarVistaPrevia(event) {
-        const file = event.target.files[0];
-        const preview = document.getElementById('preview');
+            const file = event.target.files[0];
+            const preview = document.getElementById('preview');
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = 'inline';
-            };
-            reader.readAsDataURL(file);
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'inline';
+                };
+                reader.readAsDataURL(file);
+            }
         }
-    }
     </script>
     @include('vistas-globales.vos-iu')
     @include('vistas-globales.vos-comandos') 
     <script src="{{ asset('voiceRecognition.js') }}"></script>
-
-
 </body>
-
-</html> 
+</html>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Inicio - Plantilla Web</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -366,6 +367,28 @@
                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
             }
         }
+
+        /* Estilos para los botones de título */
+        .title-button {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .title-button:hover {
+            color: var(--accent-blue-light);
+            background-color: rgba(66, 133, 244, 0.1);
+        }
+
+        .title-button i {
+            margin-right: 10px;
+        }
     </style>
     
 </head>
@@ -373,40 +396,48 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand text-glow" href="#">
+            <a class="navbar-brand text-glow" href="#" id="brandLogo">
                 <i class="fas fa-cube me-2"></i>PLANTILLA
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" id="navbarToggler" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">
+                        <a class="nav-link active" aria-current="page" href="#" id="homeLink">
                             <i class="fas fa-home me-1"></i> Inicio
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="#" id="servicesLink">
                             <i class="fas fa-box me-1"></i> Servicios
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('nombres') }}" class="nav-link boton">
+                        <a href="{{ route('nombres') }}" class="nav-link boton" id="dataLink">
                             <i class="fas fa-database me-1"></i> Datos
                         </a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="moreOptionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-bars me-1"></i> Más Opciones
                         </a>
+<<<<<<< Updated upstream
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMas">
                          <li><a class="dropdown-item" href="{{ route('modulo1')}}"><i class="fas fa-images me-2"></i>Modulo 1 Personas</a></li>
                          <li><a class="dropdown-item" href="{{ route('operacion1') }}"><i class="fas fa-info-circle me-2"></i> Modulo 2 Gestos</a></li>
                          <li><a class="dropdown-item" href="{{ route('modulo2') }}"><i class="fas fa-newspaper me-2"></i> Modulo 2 Voz</a></li>
                         <li><a class="dropdown-item" href="{{ route('operacion3') }}"><i class="fas fa-images me-2"></i> Modulo 4 Objetos</a></li>
+=======
+                        <ul class="dropdown-menu" aria-labelledby="moreOptionsDropdown">
+                         <li><a class="dropdown-item" href="{{ route('modulo1')}}" id="modulo1Link"><i class="fas fa-images me-2"></i>Modulo 1 Captura</a></li>
+                         <li><a class="dropdown-item" href="{{ route('operacion1') }}" id="modulo2GestosLink"><i class="fas fa-info-circle me-2"></i> Modulo 2 Gestos</a></li>
+                         <li><a class="dropdown-item" href="{{ route('modulo2') }}" id="modulo2VozLink"><i class="fas fa-newspaper me-2"></i> Modulo 2 Voz</a></li>
+                        <li><a class="dropdown-item" href="{{ route('operacion3') }}" id="statsLink"><i class="fas fa-images me-2"></i> estadisticas</a></li>
+>>>>>>> Stashed changes
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ route('operacion2') }}"><i class="fas fa-images me-2"></i> Ayuda</a></li>
+                        <li><a class="dropdown-item" href="{{ route('operacion2') }}" id="helpLink"><i class="fas fa-images me-2"></i> Ayuda</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -415,7 +446,7 @@
                     <form class="d-flex me-3" role="search" id="searchForm">
                       <div class="input-group input-group-sm">
                        <input class="form-control" type="search" id="searchInput" placeholder="Buscar..." aria-label="Search">
-                       <button class="btn btn-outline-light" type="submit">
+                       <button class="btn btn-outline-light" type="submit" id="searchButton">
                         <i class="fas fa-search"></i>
                        </button>
                        <button class="btn btn-outline-light" type="button" id="voiceSearchBtn" 
@@ -427,20 +458,20 @@
 
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="{{ asset('images/ejemplo.jpg') }}" alt="Foto perfil" class="rounded-circle me-1" width="30">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="{{ asset('images/ejemplo.jpg') }}" alt="Foto perfil" class="rounded-circle me-1" width="30" id="userImage">
                                 {{ $username ?? 'Usuario' }}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a href="{{ route('informacion') ?? '#' }}" class="dropdown-item">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a href="{{ route('informacion') ?? '#' }}" class="dropdown-item" id="profileLink">
                                     <i class="fas fa-info-circle me-2"></i> Mi perfil
                                 </a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-cogs me-2"></i> Configuración</a></li>
+                                <li><a class="dropdown-item" href="#" id="settingsLink"><i class="fas fa-cogs me-2"></i> Configuración</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                 <form method="POST" action="{{ route('logout') }}">
+                                 <form method="POST" action="{{ route('logout') }}" id="logoutForm">
                                     @csrf
-                                    <button type="submit" class="dropdown-item">
+                                    <button type="submit" class="dropdown-item" id="logoutButton">
                                     <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
                                     </button>
                                  </form>
@@ -458,40 +489,46 @@
     <!-- Carrusel de imágenes -->
     <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button type="button" id="carouselIndicator1" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" id="carouselIndicator2" data-bs-target="#mainCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" id="carouselIndicator3" data-bs-target="#mainCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
         
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="{{ asset('images/carousel/imagen1.jpg') }}" class="d-block w-100" alt="Slide 1">
+                <img src="{{ asset('images/carousel/imagen1.jpg') }}" class="d-block w-100" alt="Slide 1" id="carouselImage1">
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>Primer título</h5>
+                    <button onclick="window.location.href='{{ route('modulo1') }}'" class="title-button" id="carouselTitle1">
+                        <i class="fas fa-camera"></i> Primer título
+                    </button>
                     <p>Descripción </p>
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="{{ asset('images/carousel/imagen2.jpg') }}" class="d-block w-100" alt="Slide 2">
+                <img src="{{ asset('images/carousel/imagen2.jpg') }}" class="d-block w-100" alt="Slide 2" id="carouselImage2">
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>Segundo título</h5>
+                    <button onclick="window.location.href='{{ route('modulo2') }}'" class="title-button" id="carouselTitle2">
+                        <i class="fas fa-microphone"></i> Segundo título
+                    </button>
                     <p>Descripción </p>
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="{{ asset('images/carousel/imagen3.jpg') }}" class="d-block w-100" alt="Slide 3">
+                <img src="{{ asset('images/carousel/imagen3.jpg') }}" class="d-block w-100" alt="Slide 3" id="carouselImage3">
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>Tercer título</h5>
+                    <button onclick="window.location.href='{{ route('operacion3') }}'" class="title-button" id="carouselTitle3">
+                        <i class="fas fa-chart-bar"></i> Tercer título
+                    </button>
                     <p>Descripción </p>
                 </div>
             </div>
         </div>
         
-        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" id="carouselPrev" data-bs-target="#mainCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Anterior</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" id="carouselNext" data-bs-target="#mainCarousel" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Siguiente</span>
         </button>
@@ -505,10 +542,10 @@
             <div class="col-md-4 mb-4">
                 <div class="feature-card card h-100 p-3">
                     <div class="card-body">
-                        <div class="icon-text justify-content-center">
+                        <button onclick="window.location.href='{{ route('modulo1') }}'" class="icon-text justify-content-center title-button" id="featureButton1">
                             <i class="fas fa-check-circle"></i>
-                            <h3 class="card-title fs-4 mb-0">TITULO</h3>
-                        </div>
+                            <span>TITULO</span>
+                        </button>
                         <p class="card-text mt-3">Descripción .</p>
                     </div>
                 </div>
@@ -516,10 +553,10 @@
             <div class="col-md-4 mb-4">
                 <div class="feature-card card h-100 p-3">
                     <div class="card-body">
-                        <div class="icon-text justify-content-center">
+                        <button onclick="window.location.href='{{ route('modulo2') }}'" class="icon-text justify-content-center title-button" id="featureButton2">
                             <i class="fas fa-handshake"></i>
-                            <h3 class="card-title fs-4 mb-0">TITULO</h3>
-                        </div>
+                            <span>TITULO</span>
+                        </button>
                         <p class="card-text mt-3">Explicación </p>
                     </div>
                 </div>
@@ -527,10 +564,10 @@
             <div class="col-md-4 mb-4">
                 <div class="feature-card card h-100 p-3">
                     <div class="card-body">
-                        <div class="icon-text justify-content-center">
+                        <button onclick="window.location.href='{{ route('operacion3') }}'" class="icon-text justify-content-center title-button" id="featureButton3">
                             <i class="fas fa-lightbulb"></i>
-                            <h3 class="card-title fs-4 mb-0">TITULO</h3>
-                        </div>
+                            <span>TITULO</span>
+                        </button>
                         <p class="card-text mt-3">Información </p>
                     </div>
                 </div>
@@ -545,18 +582,21 @@
             <div class="col-lg-8">
                 <div class="row align-items-center"> 
                     <div class="col-md-4 text-center mb-3 mb-md-0">
-                        <img src="{{ asset('images/ejemplo.jpg') }}" alt="Imagen del usuario" class="img-fluid rounded-circle mb-3" width="150" style="border: 4px solid #007bff;">
-                        <h4 class="mb-1">{{ $username ?? 'Nombre de Usuario' }}</h4>
-                        <span class="badge bg-success">{{ $estado ?? 'Activo' }}</span>
+                        <img src="{{ asset('images/ejemplo.jpg') }}" alt="Imagen del usuario" id="profileImage" class="img-fluid rounded-circle mb-3" width="150" style="border: 4px solid #007bff;">
+                        <h4 class="mb-1" id="usernameDisplay">{{ $username ?? 'Nombre de Usuario' }}</h4>
+                        <span class="badge bg-success" id="userStatus">{{ $estado ?? 'Activo' }}</span>
                     </div>
                     <div class="col-md-8">
                         <div class="row mb-3">
                             <div class="col-sm-6">
-                                <p class="mb-1"><strong><i class="fas fa-clock me-2"></i>Hora Actual:</strong> {{ date('H:i') }}</p>
+                                <p class="mb-1"><strong><i class="fas fa-clock me-2"></i>Hora Actual:</strong> <span id="currentTime">{{ date('H:i') }}</span></p>
                             </div>
                             <div class="col-sm-6">
-                                <p class="mb-1"><strong><i class="fas fa-calendar-alt me-2"></i>Fecha Actual:</strong> {{ date('d/m/Y') }}</p>
+                                <p class="mb-1"><strong><i class="fas fa-calendar-alt me-2"></i>Fecha Actual:</strong> <span id="currentDate">{{ date('d/m/Y') }}</span></p>
                             </div>
+                        </div>
+                        <div class="row">
+                            
                         </div>
                     </div>
                 </div>
@@ -572,9 +612,18 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             const myCarousel = new bootstrap.Carousel('#mainCarousel', {
-                interval: 5000,
+                interval: 10000,
                 ride: 'carousel'
             });
+
+        
+            setInterval(updateTime, 60000);
+            
+            function updateTime() {
+                const now = new Date();
+                document.getElementById('currentTime').textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                document.getElementById('currentDate').textContent = now.toLocaleDateString();
+            }
         });
     </script>
    @include('vistas-globales.vos-iu')

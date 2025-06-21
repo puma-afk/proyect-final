@@ -274,6 +274,23 @@
         .video-container {
             animation: neon-glow 3s infinite alternate;
         }
+        .nav-btn {
+    background: transparent;
+    border: 1px solid var(--neon-blue);
+    color: var(--neon-blue);
+    padding: 14px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+}
+
+.nav-btn:hover {
+    background: rgba(0, 242, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
+}
     </style>
 </head>
 <body>
@@ -305,6 +322,7 @@
         <div class="controls">
             <button id="startBtn">Iniciar Detección</button>
             <button id="stopBtn">Detener</button>
+            <button onclick="window.location.href='{{ route('modulo2') }}'" id="backToVoiceBtn" class="nav-btn">Volver a Control de Voz</button>
         </div>
         
         <div class="gesture-commands">
@@ -323,6 +341,10 @@
             <div class="command-card" id="cmd-palm">
                 <h3>✋ Palma extendida</h3>
                 <p>Acción: <strong>Mostrar ayuda</strong></p>
+            </div>
+            <div class="command-card" id="cmd-back">
+                <h3>👈 Volver</h3>
+                <p>Acción: <strong>Ir a Control de Voz</strong></p>
             </div>
         </div>
         
@@ -388,6 +410,13 @@
                 emoji: '✋',
                 priority: 1
             }
+             'back': {
+               name: '👈 Volver',
+               action: goToVoiceControl,
+               cardId: 'cmd-back',
+               emoji: '👈',
+               priority: 5
+            }
         };
         
         // Inicializar la aplicación
@@ -409,12 +438,13 @@
             startBtn.addEventListener('click', startDetection);
             stopBtn.addEventListener('click', stopDetection);
             
-            // Tecla Escape para detener
+           
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && isRunning) {
                     stopDetection();
                 }
             });
+            document.getElementById('backToVoiceBtn').addEventListener('click', goToVoiceControl);
         }
         
         // Iniciar la detección
@@ -527,6 +557,11 @@
                 const card = document.getElementById(cardId);
                 if (card) card.classList.add('active');
             }
+        }
+        // boton volver
+        function goToVoiceControl() {
+             logAction("Redirigiendo a Control de Voz", false, true);
+              window.location.href = "{{ route('modulo2') }}"; 
         }
         
         // Verificar si el gesto se mantiene el tiempo suficiente
@@ -674,6 +709,11 @@
             if (extendedCount <= 1 && !fingersExtended.index && !fingersExtended.middle && 
                 !fingersExtended.ring && !fingersExtended.pinky) {
                 return 'fist';
+            }
+            // boton volver
+             if (fingersExtended.index && !fingersExtended.middle && !fingersExtended.ring && 
+                 !fingersExtended.pinky && indexTip[0] < wrist[0] - 50) {
+                 return 'back';
             }
             
             return null;

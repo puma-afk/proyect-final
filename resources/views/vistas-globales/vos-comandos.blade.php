@@ -25,17 +25,19 @@ window.voiceConfig = {
         'ver mi perfil|ir a perfil|perfil': 'miperfil',
         'detener|desactivar micrófono|silenciar': 'stop',
         'activar|empezar a escuchar|escuchar': 'start',
-        'cerrar sesión|salir del sistema|logout': 'logout',
+        'cerrar sesión|salir del sistema|': 'login',
          //comnados de accion
         'bajar|desplazar abajo|scroll abajo': 'scroll_down', 
         'subir|desplazar arriba|scroll arriba': 'scroll_up',
-         'subir archivo|cargar archivo': 'upload_file',      
-        'iniciar camara|abrir camara': 'start_camera',      
-        'iniciar reconocimiento|activar microfono': 'start_voice_recognition', 
-        'detener voz|desactivar microfono': 'stop_voice_recognition', 
-        // Agrega más comandos
-        'guardar cambios|guardar': 'save_changes',          
-        'enviar formulario|enviar': 'submit_form'         
+        // comandos  para botones
+        'seleccionar imagen|seleccionar': 'click-select', 
+        'subir imagen|cargar imagen': 'click-subir',     
+        'detectar personas|detectar': 'click-detectar',      
+        'atras|salir de modulo 1': 'click-atras', 
+        'borrar todo|borrar': 'click-borrar', 
+        // comandos para cambiar imagen
+        'siguiente imagen|siguiente': 'click-next', 
+        'anterior imagen|anterior': 'click-prev'       
            
     },
       

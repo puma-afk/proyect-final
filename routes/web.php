@@ -11,7 +11,7 @@ Route::get('/', function () {
 })->name('login.form');
 
 Route::post('/login', function (Request $request) {
-    // Validación básica
+    
     $request->validate([
         'username' => 'required|string',
         'password' => 'required|string'
@@ -29,7 +29,7 @@ Route::post('/login', function (Request $request) {
 })->name('login');
 
 Route::get('/perfil', function () {
-    // Verificar si hay datos en sesión
+   
     if (!Session::has('username')) {
         return redirect()->route('login.form');
     }
@@ -43,7 +43,7 @@ Route::get('/perfil', function () {
 })->name('perfil');
 
 Route::get('/informacion', function () {
-    // Verificar si hay datos en sesión
+    
     if (!Session::has('username')) {
         return redirect()->route('login.form');
     }

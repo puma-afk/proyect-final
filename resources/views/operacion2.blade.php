@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Ayuda</title>
+    <title>Ayuda - Comandos de Voz</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -73,6 +73,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             gap: 0.5rem;
+            margin-bottom: 1rem;
         }
         
         button:hover {
@@ -131,6 +132,14 @@
             padding-top: 1rem;
             border-top: 1px solid var(--border);
         }
+        
+        #readBtn {
+            background-color: #10b981;
+        }
+        
+        #readBtn:hover {
+            background-color: #059669;
+        }
     </style>
 </head>
 <body>
@@ -138,6 +147,10 @@
         <h2>
             <i class="fas fa-question-circle"></i> Comandos de Voz
         </h2>
+        
+        <button id="readBtn">
+            <i class="fas fa-volume-up"></i> Leer comandos
+        </button>
         
         <div class="content">
             <p>Todos los comandos de voz que puedes utilizar en la pagina:</p>
@@ -161,6 +174,18 @@
                         <span class="command-icon"><i class="fas fa-book-open"></i></span>
                         <span class="command-text">"modulo 2", "segunda lección", "modulo dos"</span>
                     </div>
+                    <div class="command-item">
+                        <span class="command-icon"><i class="fas fa-chart-line"></i></span>
+                        <span class="command-text">"ver estadisticas", "ir a estadisticas", "estadisticas"</span>
+                    </div>
+                    <div class="command-item">
+                        <span class="command-icon"><i class="fas fa-question-circle"></i></span>
+                        <span class="command-text">"ayuda", "informacion de ayuda", "mostrar ayuda"</span>
+                    </div>
+                    <div class="command-item">
+                        <span class="command-icon"><i class="fas fa-user"></i></span>
+                        <span class="command-text">"ver mi perfil", "ir a perfil", "perfil"</span>
+                    </div>
                 </div>
                 
                 <div class="command-category">
@@ -169,26 +194,6 @@
                         <div class="command-item">
                             <span class="command-icon"><i class="fas fa-hand-paper"></i></span>
                             <span class="command-text">"modulo dos gestos", "ir a gestos", "gestos"</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="command-category">
-                    <h3><i class="fas fa-chart-bar"></i> Estadísticas</h3>
-                    <div class="commands-list">
-                        <div class="command-item">
-                            <span class="command-icon"><i class="fas fa-chart-line"></i></span>
-                            <span class="command-text">"ver estadisticas", "ir a estadisticas", "estadisticas"</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="command-category">
-                    <h3><i class="fas fa-user-circle"></i> Perfil</h3>
-                    <div class="commands-list">
-                        <div class="command-item">
-                            <span class="command-icon"><i class="fas fa-user"></i></span>
-                            <span class="command-text">"ver mi perfil", "ir a perfil", "perfil"</span>
                         </div>
                     </div>
                 </div>
@@ -216,6 +221,54 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="command-category">
+                    <h3><i class="fas fa-mouse-pointer"></i> Acciones</h3>
+                    <div class="commands-list">
+                        <div class="command-item">
+                            <span class="command-icon"><i class="fas fa-arrow-down"></i></span>
+                            <span class="command-text">"bajar", "desplazar abajo", "scroll abajo"</span>
+                        </div>
+                        <div class="command-item">
+                            <span class="command-icon"><i class="fas fa-arrow-up"></i></span>
+                            <span class="command-text">"subir", "desplazar arriba", "scroll arriba"</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="command-category">
+                    <h3><i class="fas fa-image"></i> Manejo de Imágenes</h3>
+                    <div class="commands-list">
+                        <div class="command-item">
+                            <span class="command-icon"><i class="fas fa-mouse-pointer"></i></span>
+                            <span class="command-text">"seleccionar imagen", "seleccionar"</span>
+                        </div>
+                        <div class="command-item">
+                            <span class="command-icon"><i class="fas fa-upload"></i></span>
+                            <span class="command-text">"subir imagen", "cargar imagen"</span>
+                        </div>
+                        <div class="command-item">
+                            <span class="command-icon"><i class="fas fa-user-friends"></i></span>
+                            <span class="command-text">"detectar personas", "detectar"</span>
+                        </div>
+                        <div class="command-item">
+                            <span class="command-icon"><i class="fas fa-trash"></i></span>
+                            <span class="command-text">"borrar todo", "borrar"</span>
+                        </div>
+                        <div class="command-item">
+                            <span class="command-icon"><i class="fas fa-arrow-right"></i></span>
+                            <span class="command-text">"siguiente imagen", "siguiente"</span>
+                        </div>
+                        <div class="command-item">
+                            <span class="command-icon"><i class="fas fa-arrow-left"></i></span>
+                            <span class="command-text">"anterior imagen", "anterior"</span>
+                        </div>
+                        <div class="command-item">
+                            <span class="command-icon"><i class="fas fa-arrow-left"></i></span>
+                            <span class="command-text">"atras", "salir de modulo 1"</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <p class="help-text">la ayuda no es gratis</p>
@@ -227,8 +280,78 @@
             </button>
         </form>
     </div>
-     @include('vistas-globales.vos-iu')
+    
+
+    <script>
+        document.getElementById('readBtn').addEventListener('click', function() {
+            // Verificar compatibilidad con la API de síntesis de voz
+            if (!('speechSynthesis' in window)) {
+                alert('Lo siento, tu navegador no soporta la síntesis de voz.');
+                return;
+            }
+            
+            // Obtener todos los textos de los comandos
+            const categories = document.querySelectorAll('.commands-section h3');
+            const commandLists = document.querySelectorAll('.commands-list');
+            
+            let fullText = "Comandos de voz disponibles. ";
+            
+            categories.forEach((category, index) => {
+                fullText += `Categoría: ${category.textContent}. `;
+                
+                const commands = commandLists[index].querySelectorAll('.command-text');
+                commands.forEach((cmd, i) => {
+                    fullText += `Comando ${i + 1}: ${cmd.textContent}. `;
+                });
+            });
+            
+            fullText += "Fin de los comandos disponibles.";
+            
+            // Crear y configurar el utterance
+            const utterance = new SpeechSynthesisUtterance(fullText);
+            
+            // Intentar encontrar una voz en español
+            const voices = window.speechSynthesis.getVoices();
+            const spanishVoice = voices.find(voice => 
+                voice.lang.includes('es') || 
+                voice.lang.includes('ES') ||
+                voice.name.includes('Spanish') ||
+                voice.name.includes('español')
+            );
+            
+            if (spanishVoice) {
+                utterance.voice = spanishVoice;
+                utterance.lang = 'es-ES';
+            }
+            
+            utterance.rate = 0.9; // Velocidad de habla (0.1 a 10)
+            utterance.pitch = 1;  // Tono de voz (0 a 2)
+            
+            // Cambiar el botón mientras se está leyendo
+            const readBtn = document.getElementById('readBtn');
+            readBtn.innerHTML = '<i class="fas fa-volume-up"></i> Leyendo...';
+            readBtn.disabled = true;
+            
+            utterance.onend = function() {
+                readBtn.innerHTML = '<i class="fas fa-volume-up"></i> Leer comandos';
+                readBtn.disabled = false;
+            };
+            
+            utterance.onerror = function(event) {
+                console.error('Error en síntesis de voz:', event);
+                readBtn.innerHTML = '<i class="fas fa-volume-up"></i> Leer comandos';
+                readBtn.disabled = false;
+                alert('Error al leer los comandos');
+            };
+            
+            // Iniciar la síntesis de voz
+            window.speechSynthesis.speak(utterance);
+        });
+    </script>
+       
+       @include('vistas-globales.vos-iu')
     @include('vistas-globales.vos-comandos') 
     <script src="{{ asset('voiceRecognition.js') }}"></script>
+    
 </body>
 </html>
