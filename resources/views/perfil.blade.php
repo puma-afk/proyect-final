@@ -401,10 +401,10 @@
                             <i class="fas fa-bars me-1"></i> Más Opciones
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMas">
-                         <li><a class="dropdown-item" href="{{ route('modulo1')}}"><i class="fas fa-images me-2"></i>Modulo 1 Captura</a></li>
+                         <li><a class="dropdown-item" href="{{ route('modulo1')}}"><i class="fas fa-images me-2"></i>Modulo 1 Personas</a></li>
                          <li><a class="dropdown-item" href="{{ route('operacion1') }}"><i class="fas fa-info-circle me-2"></i> Modulo 2 Gestos</a></li>
                          <li><a class="dropdown-item" href="{{ route('modulo2') }}"><i class="fas fa-newspaper me-2"></i> Modulo 2 Voz</a></li>
-                        <li><a class="dropdown-item" href="{{ route('operacion3') }}"><i class="fas fa-images me-2"></i> estadisticas</a></li>
+                        <li><a class="dropdown-item" href="{{ route('operacion3') }}"><i class="fas fa-images me-2"></i> Modulo 4 Objetos</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ route('operacion2') }}"><i class="fas fa-images me-2"></i> Ayuda</a></li>
                         </ul>

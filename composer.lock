@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "88970a0117c062eed55fa8728fc43833",
+    "content-hash": "b415e8b16e68e7f07189671bc0182683",
     "packages": [
         {
             "name": "brick/math",
@@ -3072,6 +3072,62 @@
                 "source": "https://github.com/bobthecow/psysh/tree/v0.12.8"
             },
             "time": "2025-03-16T03:05:19+00:00"
+        },
+        {
+            "name": "puma/libreria",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/puma-afk/libreria-puma.git",
+                "reference": "e67ad373dabfb3a7758f113827944cdb0f2f816b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/puma-afk/libreria-puma/zipball/e67ad373dabfb3a7758f113827944cdb0f2f816b",
+                "reference": "e67ad373dabfb3a7758f113827944cdb0f2f816b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "php": ">=8.2"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "puma\\libreria\\ValidacionLibreriaServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "puma\\libreria\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "limbert",
+                    "email": "limbepuma01@gmail.com"
+                }
+            ],
+            "description": "Librería reconoce palabras que comienzan con mayusculas y te devuelve como palabras correctas y tambien extrae numeros del un texto.",
+            "keywords": [
+                "capitalization",
+                "laravel",
+                "number extraction",
+                "string manipulation",
+                "text processing"
+            ],
+            "support": {
+                "issues": "https://github.com/puma-afk/libreria-puma/issues",
+                "source": "https://github.com/puma-afk/libreria-puma/tree/master"
+            },
+            "time": "2025-05-12T01:22:04+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -8079,8 +8135,10 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": {},
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "puma/libreria": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

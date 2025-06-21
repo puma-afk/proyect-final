@@ -16,9 +16,6 @@ class DeteccionController extends Controller
                     return back()->withErrors(['No se recibió ninguna imagen.']);
                 }
             //MUEVE LAS IMAGENES
-
-            $imagenesExistentes = glob(storage_path("app/public/imagenes/imagen*.jpg"));
-            $numero = count($imagenesExistentes) + 1; 
             
             $timestamp = now()->format('Ymd_His');
             $nombreBase = 'imagen_' . $timestamp . '_' . uniqid();
@@ -26,7 +23,7 @@ class DeteccionController extends Controller
 
             $nombreCompleto="$nombreBase.$extensionImagen";
 
-            $rutaLocal = storage_path("app/public/imagenes/$nombreCompleto");
+            $rutaLocal =storage_path("app/public/imagenes/$nombreCompleto");
             $imagen->move(storage_path("app/public/imagenes"), $nombreCompleto);
 
             if (!file_exists($rutaLocal)) {

@@ -125,6 +125,33 @@
                 <button type="submit" class="btn btn-danger">Borrar todo</button>
             </form>
         @endif
+
+        @if(session()->has('imagenesProcesadas'))
+            <div style="margin-top: 1em;">
+                <h4>Imágenes procesadas:</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    @foreach(session('imagenesProcesadas') as $img)
+                        <div style="border: 1px solid #ccc; padding: 5px; text-align: center;">
+                            <p><strong>Nro:</strong> {{ $img['numero'] }}</p>
+                            <img src="{{ Storage::url('detecciones/' . basename($img['imagen'])) }}" alt="Imagen procesada" style="max-width: 200px;">
+                            <p><strong>Personas:</strong> {{ $img['personas_detectadas'] }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+
+        @if ($errors->any())
+            <div class="alert alert-danger" style="padding: 10px; border: 1px solid red;">
+                <ul style="list-style: none; padding-left: 0;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
     </div>
 
    <script>

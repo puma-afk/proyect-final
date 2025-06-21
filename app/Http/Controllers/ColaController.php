@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Utils\PriorityQueue;
+use SimpleXMLElement;
+use DOMDocument;
 
 class ColaController extends Controller
 {
@@ -12,16 +14,28 @@ class ColaController extends Controller
         $cola= new PriorityQueue('crc32b',$colaJSON);
         $total=0;
 
-        $historialPath=storage_path("app/colaProcesada.json");
+        $historialRuta=storage_path("app/colaProcesada.xml");
 
-        $historial=file_exists($historialPath) ? json_decode(file_get_contents($historialPath), true) : [];
+        try{
+            if(!file_exists($historialRuta) || filesize($historialRuta) === 0){
+                
+                $xml= new SimpleXMLElement('<IMAGENESPROCESADAS></IMAGENESPROCESADAS>');
+                
+            }else{
+                $xml=simplexml_load_file($historialRuta);
+            }
+        }catch(\Exception $e){
+            return back()->withErrors(['error' => 'El documento para guardar datos de las imagenes procesadas no se pudo cargar/crear']);
+        }
+
+        $i=0;
 
         while(!$cola->isEmpty()){
             $imagen =$cola->pop(); 
 
             $entrada = $imagen['entrada'];
             $salida  = $imagen['salida'];
-
+            //REVISAR
             $python="C:\\Users\\jhosb\\AppData\\Local\\Programs\\Python\\Python310\\python.exe";
 
             $script=base_path("Python/reconocedor.py");
@@ -35,24 +49,47 @@ class ColaController extends Controller
             } else {
                 $personas_detectadas = intval($datos['personas_detectadas']);
             }
+            $i++;
             $total += $personas_detectadas;
 
-            $historial[]= [
-                'imagen' => $salida,
-                'personas_detectadas' => $personas_detectadas,
-            ];
+            $nuevo=$xml->addChild('DatosDelResultado');
+            $nuevo->addChild('Nro',$i);
+            $nombreArchivo = basename($salida);
+            $nuevo->addChild('imagen',$nombreArchivo);
+            $nuevo->addChild('PersonasDetectadas',$personas_detectadas); 
+            
         }
 
-        file_put_contents($historialPath, json_encode($historial, JSON_PRETTY_PRINT));
+         $dom = new DOMDocument('1.0');
+            $dom->preserveWhiteSpace = false;
+            $dom->formatOutput = true;
+            $dom->loadXML($xml->asXML());
+            $dom->save($historialRuta);
 
-        return redirect()->route('modulo1')->with('cantidad',$total);
+            $imagenesProcesadas = [];
+
+            $imagenesProcesadas = [];
+            if (file_exists($historialRuta)) {
+                $xml = simplexml_load_file($historialRuta);
+                foreach ($xml->DatosDelResultado as $dato) {
+                    $imagenesProcesadas[] = [
+                        'imagen' => (string) $dato->imagen,
+                        'personas_detectadas' => (int) $dato->PersonasDetectadas,
+                        'numero' => (int) $dato->Nro
+                    ];
+                }
+            }
+
+        session()->flash('imagenesProcesadas', $imagenesProcesadas);
+        return redirect()->route('modulo1')->with('cantidad', $total);
+
     }
 
     public function borrar(){
-        $imagenesPath = storage_path('app/public/imagenes');
-        $deteccionesPath = storage_path('app/public/detecciones');
-        $colaPath = storage_path('app/cola.json');
-        $colaProcesadaPath = storage_path('app/colaProcesada.json');
+        $imagenesPath =storage_path("app/public/imagenes");
+        $deteccionesPath =storage_path("app/public/detecciones");
+        $colaPath = storage_path("app/cola.json");
+        $colaProcesadaPath =storage_path("app/colaProcesada.xml");
 
         $vaciarCarpeta = function ($folder) {
             if (is_dir($folder)) {
@@ -78,7 +115,7 @@ class ColaController extends Controller
         }
                 
         if (file_exists($colaProcesadaPath)) {
-            file_put_contents($colaProcesadaPath, json_encode([], JSON_PRETTY_PRINT));
+            file_put_contents($colaProcesadaPath, '<IMAGENESPROCESADAS></IMAGENESPROCESADAS>');
         }
 
         return redirect()->route('modulo1')->with('mensaje', 'Se borraron todas las imágenes, detecciones y colas.');
