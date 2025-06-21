@@ -423,19 +423,11 @@
                         <a class="nav-link dropdown-toggle" href="#" id="moreOptionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-bars me-1"></i> Más Opciones
                         </a>
-<<<<<<< Updated upstream
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMas">
-                         <li><a class="dropdown-item" href="{{ route('modulo1')}}"><i class="fas fa-images me-2"></i>Modulo 1 Personas</a></li>
-                         <li><a class="dropdown-item" href="{{ route('operacion1') }}"><i class="fas fa-info-circle me-2"></i> Modulo 2 Gestos</a></li>
-                         <li><a class="dropdown-item" href="{{ route('modulo2') }}"><i class="fas fa-newspaper me-2"></i> Modulo 2 Voz</a></li>
-                        <li><a class="dropdown-item" href="{{ route('operacion3') }}"><i class="fas fa-images me-2"></i> Modulo 4 Objetos</a></li>
-=======
                         <ul class="dropdown-menu" aria-labelledby="moreOptionsDropdown">
                          <li><a class="dropdown-item" href="{{ route('modulo1')}}" id="modulo1Link"><i class="fas fa-images me-2"></i>Modulo 1 Captura</a></li>
                          <li><a class="dropdown-item" href="{{ route('operacion1') }}" id="modulo2GestosLink"><i class="fas fa-info-circle me-2"></i> Modulo 2 Gestos</a></li>
                          <li><a class="dropdown-item" href="{{ route('modulo2') }}" id="modulo2VozLink"><i class="fas fa-newspaper me-2"></i> Modulo 2 Voz</a></li>
                         <li><a class="dropdown-item" href="{{ route('operacion3') }}" id="statsLink"><i class="fas fa-images me-2"></i> estadisticas</a></li>
->>>>>>> Stashed changes
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ route('operacion2') }}" id="helpLink"><i class="fas fa-images me-2"></i> Ayuda</a></li>
                         </ul>
