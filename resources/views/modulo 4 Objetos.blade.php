@@ -133,9 +133,8 @@
                         <i class="fas fa-search"></i> Detectar Objeto
                     </button>
                 </div>
-
-                <a id="backBtn" class='btn' href="{{ route('perfil')}}">Atras</a>
             </form>
+            <a id="backBtn" class='btn' href="{{ route('perfil')}}">Atras</a>
         </div>
 
 
