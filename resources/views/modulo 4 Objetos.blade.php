@@ -137,6 +137,33 @@
             <a id="backBtn" class='btn' href="{{ route('perfil')}}">Atras</a>
         </div>
 
+        @if (file_exists(storage_path('app/objetos_yolo.xml')))
+            @php
+                $xml = simplexml_load_file(storage_path('app/objetos_yolo.xml'));
+            @endphp
+
+            <div style="margin-top: 2em; text-align: center;">
+                <h4>Objetos Disponibles en YOLO</h4>
+                <table style="margin: 0 auto; border-collapse: collapse; width: 60%;">
+                    <thead>
+                        <tr style="background-color: #1e88e5; color: white;">
+                            <th style="border: 1px solid #ccc; padding: 8px;">Nombre</th>
+                            <th style="border: 1px solid #ccc; padding: 8px;">Label</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($xml->objeto as $objeto)
+                            <tr>
+                                <td style="border: 1px solid #ccc; padding: 8px;">{{ $objeto->nombre }}</td>
+                                <td style="border: 1px solid #ccc; padding: 8px;">{{ $objeto->label }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+
+
 
         @if(session()->has('objetos_detectados'))
             <div id="statusDisplay" class="status-display">
