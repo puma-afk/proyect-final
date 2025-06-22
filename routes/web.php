@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\VoiceGestureController;
+use App\Http\Controllers\DeteccionObjetoController;
 
 Route::get('/', function () {
     return view('login');
@@ -107,6 +108,23 @@ Route::get('/voice-routes', function() {
 
 
 Route::post('/api/voice-gesture-command', [VoiceGestureController::class, 'processCommand']);
+
+
+Route::get('/modulo4',function(){
+    return view('modulo 4 Objetos');
+})->name('modulo4');
+
+Route::post('/deteccion_objeto',['App\Http\Controllers\DeteccionObjetoController'::class,'detectar'])->name('detectar.objeto');
+
+Route::get('/objetos-detectados/{filename}', function ($filename) {
+    $path = storage_path('app/public/images/objetosDetectados/' . $filename);
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    return response()->file($path);
+})->name('ver.objeto.detectado');
+
+Route::post('/borrarObjetos',['App\Http\Controllers\DeteccionObjetoController'::class,'borrar'])->name('borrar.objetos');
 
 
 

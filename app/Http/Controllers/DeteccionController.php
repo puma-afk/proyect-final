@@ -12,9 +12,9 @@ class DeteccionController extends Controller
         try{
             //VALIDA IMAGEN SUBIDA
             $imagen = $request->file('imagen');
-                if (!$imagen) {
-                    return back()->withErrors(['No se recibió ninguna imagen.']);
-                }
+            if (!$imagen){
+                return back()->withErrors(['No se recibió ninguna imagen.']);
+            }
             //MUEVE LAS IMAGENES
             
             $timestamp = now()->format('Ymd_His');
@@ -40,7 +40,7 @@ class DeteccionController extends Controller
             ];
 
         }catch(\Exception $e){
-            return back()->withErrors(['error'=>'Error al guardar imagen: '.$e->getMessage()]);
+            return back()->withErrors(['error'=>'Error: '.$e->getMessage()]);
         }
         
         //VERIFICAMOS Y ENCOLAMOS

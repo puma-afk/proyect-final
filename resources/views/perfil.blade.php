@@ -428,6 +428,7 @@
                          <li><a class="dropdown-item" href="{{ route('operacion1') }}" id="modulo2GestosLink"><i class="fas fa-info-circle me-2"></i> Modulo 2 Gestos</a></li>
                          <li><a class="dropdown-item" href="{{ route('modulo2') }}" id="modulo2VozLink"><i class="fas fa-newspaper me-2"></i> Modulo 2 Voz</a></li>
                         <li><a class="dropdown-item" href="{{ route('operacion3') }}" id="statsLink"><i class="fas fa-images me-2"></i> estadisticas</a></li>
+                        <li><a class="dropdown-item" href="{{ route('modulo4')}}" id="modulo4Link"><i class="fas fa-images me-2"></i>Modulo 4 Objetos</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ route('operacion2') }}" id="helpLink"><i class="fas fa-images me-2"></i> Ayuda</a></li>
                         </ul>
