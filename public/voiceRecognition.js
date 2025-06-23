@@ -216,7 +216,7 @@ class VoiceRecognition {
                 this.navigateTo(window.voiceConfig.routes.estadisticas);
                 break;
              case 'gestos':
-                this.navigateTo(window.voiceConfig.routes.gestos);
+                 this.simulacionBotonClick('gestureControlBtn', "navegando a control de gestos");
                 break;
              case 'ayuda':
                 this.navigateTo(window.voiceConfig.routes.ayuda);
@@ -261,6 +261,24 @@ class VoiceRecognition {
                 break;
             case 'click-prev':
                 this.simulacionBotonClick('carouselPrev', "imagen anterior");
+                break;
+            case 'click-gestos':
+                this.simulacionBotonClick('gestoStartBtn', "iniciando camara");
+                break;
+            case 'click-gestos-d':
+                this.simulacionBotonClick('gestoStopBtn', "deteniendo camara");
+                break;
+            case 'click-gestos-vos':
+                this.simulacionBotonClick('backToVoiceBtn', "volviendo a control de vos");
+                break;
+            case 'click-comand':
+                this.simulacionBotonClick('tabComandos', "mostrar comandos");
+                break;
+            case 'click-probar':
+                this.simulacionBotonClick('tabProbarComandos', "probar comandos");
+                break;
+            case 'click-confi':
+                this.simulacionBotonClick('tabConfiguracion', "configuracion");
                 break;
             default:
                 console.warn("Acción no reconocida:", action);

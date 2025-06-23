@@ -245,7 +245,7 @@
             color: #66ff99;
         }
         
-        /* Scrollbar styling */
+    
         ::-webkit-scrollbar {
             width: 10px;
         }
@@ -264,7 +264,6 @@
             background: var(--neon-blue);
         }
         
-        /* Efecto neón para el contenedor de video */
         @keyframes neon-glow {
             0% { box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
             50% { box-shadow: 0 0 25px rgba(0, 242, 255, 0.6); }
@@ -275,34 +274,34 @@
             animation: neon-glow 3s infinite alternate;
         }
         .nav-btn {
-    background: transparent;
-    border: 1px solid var(--neon-blue);
-    color: var(--neon-blue);
-    padding: 14px 28px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
-}
+            background: transparent;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+        }
 
-.nav-btn:hover {
-    background: rgba(0, 242, 255, 0.1);
-    box-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
-}
+        .nav-btn:hover {
+            background: rgba(0, 242, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Control por Gestos Avanzado</h1>
+            <h1>Control por Gestos</h1>
         </div>
         
         <div class="video-wrapper">
             <div class="video-container">
-                <video id="video" width="640" height="480" autoplay muted playsinline></video>
-                <canvas id="canvas" width="640" height="480"></canvas>
+                <video id="video" width="630" height="480" autoplay muted playsinline></video>
+                <canvas id="canvas" width="620" height="480"></canvas>
             </div>
         </div>
         
@@ -320,8 +319,8 @@
         </div>
         
         <div class="controls">
-            <button id="startBtn">Iniciar Detección</button>
-            <button id="stopBtn">Detener</button>
+            <button id="gestoStartBtn">Iniciar Detección</button>
+            <button id="gestoStopBtn">Detener</button>
             <button onclick="window.location.href='{{ route('modulo2') }}'" id="backToVoiceBtn" class="nav-btn">Volver a Control de Voz</button>
         </div>
         
@@ -380,7 +379,7 @@
         const COMMAND_COOLDOWN = 800; // 800ms entre comandos
         const GESTURE_PRIORITY = ['open_hand', 'thumbs_up', 'fist', 'palm']; // Prioridad de gestos
         
-        // Mapeo de gestos a comandos (actualizado)
+        // Mapeo de gestos a comandos (corregido)
         const GESTURE_COMMANDS = {
             'open_hand': {
                 name: '🖐️ Mano abierta',
@@ -409,8 +408,8 @@
                 cardId: 'cmd-palm',
                 emoji: '✋',
                 priority: 1
-            }
-             'back': {
+            },
+            'back': {
                name: '👈 Volver',
                action: goToVoiceControl,
                cardId: 'cmd-back',
@@ -422,6 +421,11 @@
         // Inicializar la aplicación
         async function init() {
             try {
+                // Verificar si TensorFlow.js está cargado
+                if (typeof tf === 'undefined') {
+                    throw new Error('TensorFlow.js no se cargó correctamente');
+                }
+                
                 model = await handpose.load();
                 console.log('Modelo Handpose cargado');
                 setupEventListeners();
@@ -429,7 +433,8 @@
                 logAction("Sistema de gestos listo. Inicia la detección.", false, true);
             } catch (error) {
                 console.error('Error al cargar el modelo:', error);
-                logAction('Error al cargar el modelo de detección', true);
+                logAction('Error al cargar el modelo de detección: ' + error.message, true);
+                alert('Error al cargar el modelo de detección: ' + error.message);
             }
         }
         
@@ -438,47 +443,81 @@
             startBtn.addEventListener('click', startDetection);
             stopBtn.addEventListener('click', stopDetection);
             
-           
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && isRunning) {
                     stopDetection();
                 }
             });
+            
             document.getElementById('backToVoiceBtn').addEventListener('click', goToVoiceControl);
         }
         
-        // Iniciar la detección
+        // Iniciar la detección (mejorado con manejo de errores)
         async function startDetection() {
             if (isRunning) return;
             
             try {
+                logAction("Intentando acceder a la cámara...", false, true);
+                
                 const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: 640, height: 480, facingMode: "user" },
+                    video: { 
+                        width: { ideal: 640 }, 
+                        height: { ideal: 480 }, 
+                        facingMode: "user" 
+                    },
                     audio: false
+                }).catch(err => {
+                    logAction("Error al acceder a la cámara: " + err.message, true);
+                    throw err;
                 });
                 
                 video.srcObject = stream;
                 isRunning = true;
                 startBtn.disabled = true;
                 stopBtn.disabled = false;
-                logAction("Detección de gestos iniciada", false, true);
                 
-                await new Promise((resolve) => {
+                // Esperar a que el video esté listo
+                await new Promise((resolve, reject) => {
                     video.onloadedmetadata = () => {
                         canvas.width = video.videoWidth;
                         canvas.height = video.videoHeight;
+                        logAction("Cámara iniciada correctamente", false, true);
                         resolve();
                     };
+                    
+                    video.onerror = () => {
+                        reject(new Error("Error al cargar el video"));
+                    };
+                    
+                    // Timeout por si el video no carga
+                    setTimeout(() => {
+                        if (!video.videoWidth) {
+                            reject(new Error("El video no se cargó en el tiempo esperado"));
+                        }
+                    }, 2000);
                 });
                 
                 detectGestures();
             } catch (error) {
-                console.error('Error al acceder a la cámara:', error);
-                logAction("Error al acceder a la cámara. Asegúrate de permitir el acceso.", true);
+                console.error('Error en startDetection:', error);
+                logAction("Error al iniciar la detección: " + error.message, true);
+                
+                // Mostrar mensaje de error apropiado
+                let errorMsg = "Error al acceder a la cámara";
+                if (error.name === 'NotAllowedError') {
+                    errorMsg = "Permiso denegado. Por favor permite el acceso a la cámara.";
+                } else if (error.name === 'NotFoundError') {
+                    errorMsg = "No se encontró ninguna cámara disponible.";
+                } else if (error.name === 'NotSupportedError') {
+                    errorMsg = "Navegador no compatible o sin soporte para cámara.";
+                }
+                
+                alert(errorMsg);
+                stopDetection();
             }
         }
         
-        // Detener la detección
+        // Detener la detección (mejorado)
         function stopDetection() {
             if (!isRunning) return;
             
@@ -488,7 +527,9 @@
             stopBtn.disabled = true;
             
             if (video.srcObject) {
-                video.srcObject.getTracks().forEach(track => track.stop());
+                video.srcObject.getTracks().forEach(track => {
+                    track.stop();
+                });
                 video.srcObject = null;
             }
             
@@ -499,7 +540,7 @@
             resetGestureState();
         }
         
-        // Bucle principal de detección
+        // Bucle principal de detección (optimizado)
         async function detectGestures() {
             if (!isRunning) return;
             
@@ -507,7 +548,7 @@
                 const predictions = await model.estimateHands(video);
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
-                if (predictions.length > 0) {
+                if (predictions && predictions.length > 0) {
                     const landmarks = predictions[0].landmarks;
                     drawLandmarks(landmarks);
                     
@@ -526,7 +567,7 @@
                 animationId = requestAnimationFrame(detectGestures);
             } catch (error) {
                 console.error('Error en detección:', error);
-                logAction("Error en detección de gestos", true);
+                logAction("Error en detección de gestos: " + error.message, true);
                 stopDetection();
             }
         }
@@ -558,10 +599,11 @@
                 if (card) card.classList.add('active');
             }
         }
-        // boton volver
+        
+        // Función para volver al control de voz
         function goToVoiceControl() {
-             logAction("Redirigiendo a Control de Voz", false, true);
-              window.location.href = "{{ route('modulo2') }}"; 
+            logAction("Redirigiendo a Control de Voz", false, true);
+            window.location.href = "{{ route('modulo2') }}";
         }
         
         // Verificar si el gesto se mantiene el tiempo suficiente
@@ -580,7 +622,6 @@
             gestureProgress.style.width = `${progress}%`;
             
             if (duration >= GESTURE_HOLD_TIME && (now - lastCommandTime) > COMMAND_COOLDOWN) {
-                // Verificar prioridad de gestos para evitar solapamiento
                 if (shouldExecuteGesture(gesture)) {
                     executeCommand(gesture);
                     gestureStartTime = now;
@@ -596,7 +637,6 @@
             const currentPriority = GESTURE_COMMANDS[currentGesture]?.priority || 0;
             const lastPriority = GESTURE_COMMANDS[lastGesture]?.priority || 0;
             
-            // Solo permitir ejecución si el gesto actual tiene mayor o igual prioridad
             return currentPriority >= lastPriority;
         }
         
@@ -627,16 +667,15 @@
             }
         }
         
-        // Funciones de comandos actualizadas
+        // Funciones de comandos
         function showHelp() {
             logAction("Mostrando ayuda", false, true);
-            alert("AYUDA\n\n✋ Palma extendida: Mostrar ayuda\n👊 Puño cerrado: Scroll abajo\n👍 Pulgar arriba: Ir a Perfil\n🖐️ Mano abierta: Detener detección");
+            alert("AYUDA\n\n✋ Palma extendida: Mostrar ayuda\n👊 Puño cerrado: Scroll abajo\n👍 Pulgar arriba: Ir a Perfil\n🖐️ Mano abierta: Detener detección\n👈 Volver: Ir a Control de Voz");
         }
         
         function goToProfile() {
             logAction("Redirigiendo a la página 'Perfil'", false, true);
-            // Redirección real a perfil.html
-           window.location.href = "{{ route('perfil') }}"; 
+            window.location.href = "{{ route('perfil') }}";
         }
         
         function scrollDown() {
@@ -647,35 +686,30 @@
             logAction("Desplazamiento hacia abajo", false, true);
         }
         
-        // Registrar acción en el log
+        
         function logAction(message, isError = false, isSuccess = false) {
             const logEntry = document.createElement('div');
             logEntry.className = `log-entry ${isError ? 'error' : ''} ${isSuccess ? 'success' : ''}`;
             logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
             actionLog.prepend(logEntry);
             
-            // Limitar el número de entradas en el log
+            
             if (actionLog.children.length > 15) {
                 actionLog.removeChild(actionLog.lastChild);
             }
         }
         
-        // Función mejorada para reconocer gestos
+        
         function recognizeGesture(landmarks) {
-            // Obtener puntos clave
+            if (!landmarks || landmarks.length < 21) return null;
+            
+           
             const thumbTip = landmarks[4];
             const indexTip = landmarks[8];
             const middleTip = landmarks[12];
             const ringTip = landmarks[16];
             const pinkyTip = landmarks[20];
             const wrist = landmarks[0];
-            
-            // Calcular distancias entre dedos y muñeca
-            const thumbDist = distance(thumbTip, wrist);
-            const indexDist = distance(indexTip, wrist);
-            const middleDist = distance(middleTip, wrist);
-            const ringDist = distance(ringTip, wrist);
-            const pinkyDist = distance(pinkyTip, wrist);
             
             // Determinar qué dedos están extendidos
             const fingersExtended = {
@@ -688,32 +722,32 @@
             
             const extendedCount = Object.values(fingersExtended).filter(b => b).length;
             
-            // Detección de gestos mejorada
-            // Pulgar arriba (solo pulgar extendido hacia arriba)
+            
             if (fingersExtended.thumb && !fingersExtended.index && !fingersExtended.middle && 
                 !fingersExtended.ring && !fingersExtended.pinky && thumbTip[1] < wrist[1] - 40) {
                 return 'thumbs_up';
             }
             
-            // Palma extendida (todos los dedos extendidos y juntos)
+           
             if (extendedCount >= 4 && fingersTogether(landmarks)) {
                 return 'palm';
             }
             
-            // Mano abierta (todos los dedos extendidos pero no necesariamente juntos)
+  
             if (extendedCount >= 4) {
                 return 'open_hand';
             }
             
-            // Puño (ningún dedo extendido o solo pulgar)
+            
             if (extendedCount <= 1 && !fingersExtended.index && !fingersExtended.middle && 
                 !fingersExtended.ring && !fingersExtended.pinky) {
                 return 'fist';
             }
-            // boton volver
-             if (fingersExtended.index && !fingersExtended.middle && !fingersExtended.ring && 
-                 !fingersExtended.pinky && indexTip[0] < wrist[0] - 50) {
-                 return 'back';
+            
+            // Gesto de volver (índice extendido hacia la izquierda)
+            if (fingersExtended.index && !fingersExtended.middle && !fingersExtended.ring && 
+                !fingersExtended.pinky && indexTip[0] < wrist[0] - 50) {
+                return 'back';
             }
             
             return null;
@@ -750,6 +784,8 @@
         
         // Función para dibujar landmarks con colores diferentes por dedo
         function drawLandmarks(landmarks) {
+            if (!landmarks) return;
+            
             // Colores para cada dedo
             const colors = ['#FF5252', '#4CAF50', '#2196F3', '#FFEB3B', '#E91E63'];
             
@@ -771,28 +807,34 @@
                     const start = landmarks[finger[i]];
                     const end = landmarks[finger[i + 1]];
                     
-                    ctx.beginPath();
-                    ctx.moveTo(start[0], start[1]);
-                    ctx.lineTo(end[0], end[1]);
-                    ctx.stroke();
+                    if (start && end) {
+                        ctx.beginPath();
+                        ctx.moveTo(start[0], start[1]);
+                        ctx.lineTo(end[0], end[1]);
+                        ctx.stroke();
+                    }
                 }
                 
                 // Dibujar puntos
                 ctx.fillStyle = colors[fingerIdx];
                 for (let i = 1; i < finger.length; i++) {
                     const point = landmarks[finger[i]];
-                    ctx.beginPath();
-                    ctx.arc(point[0], point[1], 5, 0, 2 * Math.PI);
-                    ctx.fill();
+                    if (point) {
+                        ctx.beginPath();
+                        ctx.arc(point[0], point[1], 5, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
                 }
             });
             
             // Dibujar punto de la muñeca
             ctx.fillStyle = '#FFFFFF';
             const wrist = landmarks[0];
-            ctx.beginPath();
-            ctx.arc(wrist[0], wrist[1], 7, 0, 2 * Math.PI);
-            ctx.fill();
+            if (wrist) {
+                ctx.beginPath();
+                ctx.arc(wrist[0], wrist[1], 7, 0, 2 * Math.PI);
+                ctx.fill();
+            }
         }
         
         // Función para determinar si un dedo está extendido
@@ -800,6 +842,8 @@
             const tip = landmarks[indices[indices.length - 1]];
             const dip = landmarks[indices[indices.length - 2]];
             const pip = landmarks[indices[indices.length - 3]];
+            
+            if (!tip || !dip || !pip || !wrist) return false;
             
             // Calculamos ángulos entre las articulaciones
             const angle1 = calculateAngle(pip, dip, tip);
@@ -821,10 +865,10 @@
             return (Math.abs(alpha * 180 / Math.PI));
         }
         
-        // Iniciar la aplicación
-        window.addEventListener('load', init);
+        
+        document.addEventListener('DOMContentLoaded', init);
     </script>
-     @include('vistas-globales.vos-iu')
+    @include('vistas-globales.vos-iu')
     @include('vistas-globales.vos-comandos') 
     <script src="{{ asset('voiceRecognition.js') }}"></script>
 </body>

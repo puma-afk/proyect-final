@@ -19,7 +19,7 @@ window.voiceConfig = {
         'ir a datos|ver datos|mis datos': 'data',
         'modulo 1|primera lección|modulo uno': 'module1',
         'modulo 2|segunda lección|modulo dos': 'vos',
-        'modulo dos gestos|ir a gestos|gestos': 'gestos',
+        'control de gestos|ir a gestos|gestos': 'gestos',
         'ver estadisticas|ir a estadisticas|estadisticas': 'estadisticas',
         'ayuda|informacion de ayuda|mostrar ayuda': 'ayuda',
         'ver mi perfil|ir a perfil|perfil': 'miperfil',
@@ -35,6 +35,13 @@ window.voiceConfig = {
         'detectar personas|detectar': 'click-detectar',      
         'atras|salir de modulo 1': 'click-atras', 
         'borrar todo|borrar': 'click-borrar', 
+        'iniciar deteccion| dectectar gestos': 'click-gestos', 
+        'detener camara|detener gestos': 'click-gestos-d', 
+        'volver a control de vos|volver a vos': 'click-gestos-vos', 
+        'comandos': 'click-comand', 
+        'probar comandos': 'click-probar',
+        'configuracion': 'click-confi',
+        'borrar todo|borrar': 'click-borrar',
         // comandos para cambiar imagen
         'siguiente imagen|siguiente': 'click-next', 
         'anterior imagen|anterior': 'click-prev'       
