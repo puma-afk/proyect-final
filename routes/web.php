@@ -129,4 +129,9 @@ Route::post('/borrarObjetos',['App\Http\Controllers\DeteccionObjetoController'::
 
 
 
- 
+
+
+//REPORTES
+use App\Http\Controllers\ReporteController;
+
+Route::get('/reportes', [ReporteController::class, 'mostrarReportes'])->name('reportes');
