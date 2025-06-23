@@ -124,7 +124,7 @@
             <form id="uploadForm" action="{{ route('detectar.objeto') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <label id="fileLabel" class="input-file-label" for="imagen">Seleccionar imagen</label>
+                <label id="selectImagen" class="input-file-label" for="imagen">Seleccionar imagen</label>
                 <input type="file" name="imagen" id="imagen" accept="image/*" required style="display:none;" onchange="mostrarVistaPrevia(event)">
 
                 <div class="input-group input-group-sm mb-3" style="margin-top:10px;">
@@ -134,7 +134,7 @@
                     </button>
                 </div>
             </form>
-            <a id="backBtn" class='btn' href="{{ route('perfil')}}">Atras</a>
+            <a id="objectbackBtn" class='btn' href="{{ route('perfil')}}">Atras</a>
         </div>
 
         @if (file_exists(storage_path('app/objetos_yolo.xml')))
@@ -171,7 +171,7 @@
             </div>
             <form id="deleteForm" action="{{ route('borrar.objetos') }}" method="POST" style="margin-top: 1em;">
                 @csrf
-                <button type="submit" id="deleteBtn" class="btn btn-danger">Borrar</button>
+                <button type="submit" id="objectdeleteBtn" class="btn btn-danger">Borrar imagen</button>
             </form>
         @endif
 
@@ -216,5 +216,8 @@
             }
         }
     </script>
+     @include('vistas-globales.vos-iu')
+@include('vistas-globales.vos-comandos') 
+<script src="{{ asset('voiceRecognition.js') }}"></script>
 </body>
 </html>

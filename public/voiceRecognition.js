@@ -212,8 +212,8 @@ class VoiceRecognition {
             case 'vos':
                 this.navigateTo(window.voiceConfig.routes.vos);
                 break;
-             case 'estadisticas':
-                this.navigateTo(window.voiceConfig.routes.estadisticas);
+             case 'module4':
+                this.navigateTo(window.voiceConfig.routes.module4);
                 break;
              case 'gestos':
                  this.simulacionBotonClick('gestureControlBtn', "navegando a control de gestos");
@@ -279,6 +279,18 @@ class VoiceRecognition {
                 break;
             case 'click-confi':
                 this.simulacionBotonClick('tabConfiguracion', "configuracion");
+                break;
+            case 'click-object':
+                this.simulacionBotonClick('selectImagen', "seleccionar imagen");
+                break;
+            case 'click-object-d':
+                this.simulacionBotonClick('detectButton', "detectando objetos");
+                break;
+            case 'click-back-o':
+                this.simulacionBotonClick('objectbackBtn', "volviendo");
+                break;
+            case 'click-borrar-i':
+                this.simulacionBotonClick('objectdeleteBtn', "borrando");
                 break;
             default:
                 console.warn("Acción no reconocida:", action);

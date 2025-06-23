@@ -50,7 +50,7 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Estilo para el botón de voz en la barra de búsqueda */
+    
     #voiceSearchBtn.listening {
         background-color: #dc3545;
         border-color: #dc3545;

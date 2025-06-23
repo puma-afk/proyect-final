@@ -7,7 +7,7 @@ window.voiceConfig = {
         data: "{{ route('nombres') }}",
         module1: "{{ route('modulo1') }}",
         vos: "{{ route('modulo2') }}",
-        estadisticas: "{{ route('operacion3') }}",
+        module4: "{{ route('modulo4') }}",
         gestos: "{{ route('operacion1') }}",
         ayuda: "{{ route('operacion2') }}",
         miperfil: "{{ route('informacion') }}"
@@ -20,7 +20,7 @@ window.voiceConfig = {
         'modulo 1|primera lección|modulo uno': 'module1',
         'modulo 2|segunda lección|modulo dos': 'vos',
         'control de gestos|ir a gestos|gestos': 'gestos',
-        'ver estadisticas|ir a estadisticas|estadisticas': 'estadisticas',
+        'modulo 4|modulo cuatro': 'module4',
         'ayuda|informacion de ayuda|mostrar ayuda': 'ayuda',
         'ver mi perfil|ir a perfil|perfil': 'miperfil',
         'detener|desactivar micrófono|silenciar': 'stop',
@@ -41,7 +41,10 @@ window.voiceConfig = {
         'comandos': 'click-comand', 
         'probar comandos': 'click-probar',
         'configuracion': 'click-confi',
-        'borrar todo|borrar': 'click-borrar',
+        'selecionar imagen objeto|selecionar objeto': 'click-object',
+        'detectar objeto|detectar objetos': 'click-object-d',
+        'atras|volver a inicio': 'click-back-o',
+        'borrar imagen|borrar': 'click-borrar-i',
         // comandos para cambiar imagen
         'siguiente imagen|siguiente': 'click-next', 
         'anterior imagen|anterior': 'click-prev'       
