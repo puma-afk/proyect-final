@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+
+
     <title>Inicio - Plantilla Web</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -423,12 +426,19 @@
                         <a class="nav-link dropdown-toggle" href="#" id="moreOptionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-bars me-1"></i> Más Opciones
                         </a>
+<<<<<<< Updated upstream
                         <ul class="dropdown-menu" aria-labelledby="moreOptionsDropdown">
                          <li><a class="dropdown-item" href="{{ route('modulo1')}}" id="modulo1Link"><i class="fas fa-images me-2"></i>Modulo 1 Captura</a></li>
                          <li><a class="dropdown-item" href="{{ route('operacion1') }}" id="modulo2GestosLink"><i class="fas fa-info-circle me-2"></i> Modulo 2 Gestos</a></li>
                          <li><a class="dropdown-item" href="{{ route('modulo2') }}" id="modulo2VozLink"><i class="fas fa-newspaper me-2"></i> Modulo 2 Voz</a></li>
                         <li><a class="dropdown-item" href="{{ route('operacion3') }}" id="statsLink"><i class="fas fa-images me-2"></i> estadisticas</a></li>
                         <li><a class="dropdown-item" href="{{ route('modulo4')}}" id="modulo4Link"><i class="fas fa-images me-2"></i>Modulo 4 Objetos</a></li>
+=======
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMas">
+                         <li><a class="dropdown-item" href="{{ route('modulo1')}}"><i class="fas fa-images me-2"></i>Modulo 1 Personas</a></li>
+                         <li><a class="dropdown-item" href="{{ route('modulo2') }}"><i class="fas fa-newspaper me-2"></i> Modulo 2 Voz</a></li>
+                        <li><a class="dropdown-item" href="{{ route('operacion3') }}"><i class="fas fa-images me-2"></i> Modulo 4 Objetos</a></li>
+>>>>>>> Stashed changes
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ route('operacion2') }}" id="helpLink"><i class="fas fa-images me-2"></i> Ayuda</a></li>
                         </ul>
@@ -492,25 +502,25 @@
                 <img src="{{ asset('images/carousel/imagen1.jpg') }}" class="d-block w-100" alt="Slide 1" id="carouselImage1">
                 <div class="carousel-caption d-none d-md-block">
                     <button onclick="window.location.href='{{ route('modulo1') }}'" class="title-button" id="carouselTitle1">
-                        <i class="fas fa-camera"></i> Primer título
+                        <i class="fas fa-camera"></i> modulo 1
                     </button>
-                    <p>Descripción </p>
+                    <p> reconocimiento de personas dentro de una foto </p>
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('images/carousel/imagen2.jpg') }}" class="d-block w-100" alt="Slide 2" id="carouselImage2">
                 <div class="carousel-caption d-none d-md-block">
                     <button onclick="window.location.href='{{ route('modulo2') }}'" class="title-button" id="carouselTitle2">
-                        <i class="fas fa-microphone"></i> Segundo título
+                        <i class="fas fa-microphone"></i> modulo 2
                     </button>
-                    <p>Descripción </p>
+                    <p>admistracion de comandos de vos </p>
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('images/carousel/imagen3.jpg') }}" class="d-block w-100" alt="Slide 3" id="carouselImage3">
                 <div class="carousel-caption d-none d-md-block">
                     <button onclick="window.location.href='{{ route('operacion3') }}'" class="title-button" id="carouselTitle3">
-                        <i class="fas fa-chart-bar"></i> Tercer título
+                        <i class="fas fa-chart-bar"></i> titulo
                     </button>
                     <p>Descripción </p>
                 </div>
@@ -530,7 +540,7 @@
     <div class="blue-stripe"></div>
 
     <section class="container my-5 py-4">
-        <h2 class="text-center mb-5 display-5 fw-bold section-title">¿Por Qué? ¿Para Qué? ¿Cómo?</h2>
+        <h2 class="text-center mb-5 display-5 fw-bold section-title">funcionalidades</h2>
         <div class="row text-center">
             <div class="col-md-4 mb-4">
                 <div class="feature-card card h-100 p-3">
