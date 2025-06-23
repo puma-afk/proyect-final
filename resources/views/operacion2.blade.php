@@ -198,7 +198,7 @@
                 <div class="commands-list">
                     <div class="command-item">
                         <span class="command-icon"><i class="fas fa-home"></i></span>
-                        <span class="command-text">"ir a inicio", "volver", "inicio"</span>
+                        <span class="command-text">"volver a inicio", "volver", "inicio"</span>
                     </div>
                     <div class="command-item">
                         <span class="command-icon"><i class="fas fa-database"></i></span>

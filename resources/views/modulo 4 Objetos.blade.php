@@ -124,7 +124,7 @@
             <form id="uploadForm" action="{{ route('detectar.objeto') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <label id="selectImagen" class="input-file-label" for="imagen">Seleccionar imagen</label>
+                <label id="selectImagen" class="input-file-label" for="imagen">Seleccionar objeto</label>
                 <input type="file" name="imagen" id="imagen" accept="image/*" required style="display:none;" onchange="mostrarVistaPrevia(event)">
 
                 <div class="input-group input-group-sm mb-3" style="margin-top:10px;">
@@ -134,7 +134,7 @@
                     </button>
                 </div>
             </form>
-            <a id="objectbackBtn" class='btn' href="{{ route('perfil')}}">Atras</a>
+            <a id="objectbackBtn" class='btn' href="{{ route('perfil')}}">volver a inicio</a>
         </div>
 
         @if (file_exists(storage_path('app/objetos_yolo.xml')))

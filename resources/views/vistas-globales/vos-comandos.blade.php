@@ -15,7 +15,7 @@ window.voiceConfig = {
 
     // Comandos de voz y sus acciones asociadas
     commands: {
-        'ir a inicio|volver|inicio': 'home',
+        'volver a inicio|volver|inicio': 'home',
         'ir a datos|ver datos|mis datos': 'data',
         'modulo 1|primera lección|modulo uno': 'module1',
         'modulo 2|segunda lección|modulo dos': 'vos',
@@ -37,11 +37,11 @@ window.voiceConfig = {
         'borrar todo|borrar': 'click-borrar', 
         'iniciar deteccion| dectectar gestos': 'click-gestos', 
         'detener camara|detener gestos': 'click-gestos-d', 
-        'volver a control de vos|volver a vos': 'click-gestos-vos', 
+        'volver a control de voz|volver a voz': 'click-gestos-vos', 
         'comandos': 'click-comand', 
         'probar comandos': 'click-probar',
         'configuracion': 'click-confi',
-        'selecionar imagen objeto|selecionar objeto': 'click-object',
+        'seleccionar imagen objeto|seleccionar objeto': 'click-object',
         'detectar objeto|detectar objetos': 'click-object-d',
         'atras|volver a inicio': 'click-back-o',
         'borrar imagen|borrar': 'click-borrar-i',

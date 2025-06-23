@@ -3,7 +3,9 @@ class VoiceRecognition {
         this.recognition = null;
         this.isListening = false;
         this.lastCommandTime = 0;
-        this.commandCooldown = 1000; // 1 segundo entre comandos
+        this.commandCooldown = 2000;
+        this.speechSynth = window.speechSynthesis;
+        this.isSpeaking = false; 
         this.init();
     }
 
@@ -12,14 +14,13 @@ class VoiceRecognition {
             if (window.SpeechRecognition || window.webkitSpeechRecognition) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 this.recognition = new SpeechRecognition();
-                
+
                 this.recognition.continuous = true;
                 this.recognition.interimResults = false;
                 this.recognition.lang = 'es-ES';
-                
+
                 this.bindEvents();
-                
-                // Iniciar automáticamente si estaba activo
+
                 if (this.getPersistedState()) {
                     this.start();
                 }
@@ -36,14 +37,20 @@ class VoiceRecognition {
         if (!this.recognition) return;
 
         this.recognition.onresult = (event) => {
+          
+            if (this.isSpeaking) {
+                console.log("Ignorando resultado de reconocimiento mientras el sistema habla.");
+                return;
+            }
+
             const now = Date.now();
             if (now - this.lastCommandTime < this.commandCooldown) return;
-            
+
             const lastResultIndex = event.results.length - 1;
-            const commandText = event.results[lastResultIndex][0].transcript.trim(); // Asegura trim()
+            const commandText = event.results[lastResultIndex][0].transcript.trim();
 
             this.processCommand(commandText);
-            this.lastCommandTime = now; // Reiniciar el contador de cooldown después de procesar
+            this.lastCommandTime = now;
         };
 
         this.recognition.onerror = (event) => {
@@ -78,20 +85,21 @@ class VoiceRecognition {
                     break;
             }
             this.showErrorNotification(errorMessage);
-            this.updateVoiceButtonState(false); // Reflejar que no está escuchando
-            this.isListening = false; // Actualizar estado
+            this.speak(errorMessage);
+            this.updateVoiceButtonState(false);
+            this.isListening = false;
         };
 
         this.recognition.onend = () => {
             console.log("Reconocimiento de voz terminado.");
-            if (this.isListening) { // Solo si queremos que sea continuo y no se detuvo manualmente
-                // console.log("Reiniciando reconocimiento...");
-                // this.recognition.start(); // Esto puede causar bucles si hay muchos errores
+           
+            if (this.isListening && !this.isSpeaking) {
+                console.log("Reconocimiento de voz reiniciado automáticamente.");
+                this.recognition.start();
             }
-            this.updateVoiceButtonState(this.isListening); // Asegura que el botón refleje el estado
+            this.updateVoiceButtonState(this.isListening);
         };
 
-        // Evento para el botón global de voz
         const globalVoiceBtn = document.getElementById('globalVoiceBtn');
         if (globalVoiceBtn) {
             globalVoiceBtn.addEventListener('click', () => {
@@ -109,13 +117,17 @@ class VoiceRecognition {
             try {
                 this.recognition.start();
                 this.isListening = true;
-                this.showFeedbackNotification("Escuchando comandos...");
+                const message = "en que puedo ayudarte";
+                this.showFeedbackNotification(message);
+                this.speak(message);
                 this.updateVoiceButtonState(true);
                 this.persistState(true);
                 console.log("Reconocimiento de voz iniciado.");
             } catch (e) {
                 console.error("Error al iniciar reconocimiento:", e);
-                this.showErrorNotification("No se pudo iniciar el reconocimiento de voz. Verifica permisos o reinicia.");
+                const errorMessage = "No se pudo iniciar el reconocimiento de voz. Verifica permisos ";
+                this.showErrorNotification(errorMessage);
+                this.speak(errorMessage);
                 this.isListening = false;
                 this.updateVoiceButtonState(false);
             }
@@ -126,19 +138,19 @@ class VoiceRecognition {
         if (this.recognition && this.isListening) {
             this.recognition.stop();
             this.isListening = false;
-            this.showFeedbackNotification("Micrófono desactivado.");
+            const message = "Micrófono desactivado.";
+            this.showFeedbackNotification(message);
+            this.speak(message);
             this.updateVoiceButtonState(false);
             this.persistState(false);
             console.log("Reconocimiento de voz detenido.");
         }
     }
 
-    // persistir el estado de escucha en localStorage
     persistState(state) {
         localStorage.setItem('voiceRecognitionActive', state);
     }
 
-    // obtener el estado de escucha desde localStorage
     getPersistedState() {
         return localStorage.getItem('voiceRecognitionActive') === 'true';
     }
@@ -146,167 +158,207 @@ class VoiceRecognition {
     processCommand(commandText) {
         const now = Date.now();
         if (now - this.lastCommandTime < this.commandCooldown) {
-            // console.log("En cooldown, ignorando comando:", commandText);
-            return; // Ignorar comandos si estamos en cooldown
+            return;
         }
 
-        
-        // Elimina acentos, convierte a minúsculas, quita signos de puntuación y espacios extra
         const normalizedCommand = commandText
             .toLowerCase()
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "") // Elimina acentos
-            .replace(/[¿?¡!.,;:]/g, "")      
-            .trim(); // Elimina espacios al inicio/final
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[¿?¡!.,;:]/g, "")
+            .trim();
+
         this.showFeedbackNotification(`Comando reconocido: "${normalizedCommand}"`);
+        this.speak(`Comando reconocido: ${normalizedCommand}`); 
         console.log("Comando normalizado para procesar:", normalizedCommand);
 
         if (!window.voiceConfig || !window.voiceConfig.commands) {
             console.error("Error: window.voiceConfig.commands no está definido.");
             this.showErrorNotification("Error de configuración de comandos de voz.");
+            this.speak("Error de configuración de comandos de voz.");
             return;
         }
 
         let commandFound = false;
         for (const patternString in window.voiceConfig.commands) {
-            // Normaliza el patrón de la misma manera que el comando reconocido
             const normalizedPatternString = patternString.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-            // Divide el patrón en frases individuales usando '|'
             const phrases = normalizedPatternString.split('|');
 
-            // Busca una coincidencia exacta dentro de las frases normalizadas
             if (phrases.includes(normalizedCommand)) {
                 const action = window.voiceConfig.commands[patternString];
                 console.log(`Comando "${normalizedCommand}" coincide con acción: "${action}"`);
                 this.executeAction(action);
-                this.lastCommandTime = now; // Reiniciar cooldown
+                this.lastCommandTime = now;
                 commandFound = true;
-                break; // Salir del bucle una vez que se encuentra un comando
+                break;
             }
         }
 
         if (!commandFound) {
-            this.showErrorNotification(`Comando no reconocido: "${normalizedCommand}"`);
+            const notRecognizedMessage = `Comando no reconocido: "${normalizedCommand}"`;
+            this.showErrorNotification(notRecognizedMessage);
+            this.speak(notRecognizedMessage);
             console.warn("No se encontró ninguna coincidencia para el comando:", normalizedCommand);
         }
     }
 
     executeAction(action) {
+        
         if (!window.voiceConfig || !window.voiceConfig.routes || !window.voiceConfig.actions) {
             console.error("Error: Configuración de rutas o acciones de voz no definida.");
             this.showErrorNotification("Error interno de configuración de voz.");
+            this.speak("Error interno de configuración de voz.");
             return;
         }
 
+        let feedbackMessage = "";
+
         switch (action) {
             case 'home':
+                feedbackMessage = "Navegando a la página de inicio.";
                 this.navigateTo(window.voiceConfig.routes.home);
                 break;
             case 'data':
+                feedbackMessage = "Navegando a la sección de datos.";
                 this.navigateTo(window.voiceConfig.routes.data);
                 break;
             case 'module1':
+                feedbackMessage = "Navegando al módulo uno.";
                 this.navigateTo(window.voiceConfig.routes.module1);
                 break;
             case 'vos':
+                feedbackMessage = "Navegando a control de voz.";
                 this.navigateTo(window.voiceConfig.routes.vos);
                 break;
-             case 'module4':
+            case 'module4':
+                feedbackMessage = "Navegando al módulo cuatro.";
                 this.navigateTo(window.voiceConfig.routes.module4);
                 break;
-             case 'gestos':
-                 this.simulacionBotonClick('gestureControlBtn', "navegando a control de gestos");
+            case 'gestos':
+                this.simulacionBotonClick('gestureControlBtn', "navegando a control de gestos");
+                feedbackMessage = "Navegando a control de gestos.";
                 break;
-             case 'ayuda':
+            case 'ayuda':
+                feedbackMessage = "Navegando a la página de ayuda.";
                 this.navigateTo(window.voiceConfig.routes.ayuda);
                 break;
-             case 'miperfil':
+            case 'miperfil':
+                feedbackMessage = "Navegando a mi perfil.";
                 this.navigateTo(window.voiceConfig.routes.miperfil);
                 break;
-             
             case 'stop':
                 this.stop();
+                feedbackMessage = "Reconocimiento de voz detenido."; 
                 break;
             case 'start':
                 this.start();
+                feedbackMessage = "Reconocimiento de voz iniciado."; 
                 break;
             case 'login':
                 this.handleLogout();
+                feedbackMessage = "Cerrando sesión."; 
                 break;
-
-             case 'scroll_down':
-                this.scrollPage('down'); 
+            case 'scroll_down':
+                this.scrollPage('down');
+                feedbackMessage = "Desplazando hacia abajo."; 
                 break;
             case 'scroll_up':
-                this.scrollPage('up');   
+                this.scrollPage('up');
+                feedbackMessage = "Desplazando hacia arriba."; 
                 break;
             case 'click-select':
-                this.simulacionBotonClick('fileLabel', "selecionando imagen");
+                this.simulacionBotonClick('fileLabel', "seleccionando imagen");
+                feedbackMessage = "Seleccionando imagen.";
                 break;
             case 'click-subir':
                 this.simulacionBotonClick('uploadBtn', "subiendo imagen");
+                feedbackMessage = "Subiendo imagen.";
                 break;
             case 'click-detectar':
-                this.simulacionBotonClick('detectBtn', "inicando detectar personas");
+                this.simulacionBotonClick('detectBtn', "iniciando detectar personas");
+                feedbackMessage = "Iniciando detección de personas.";
                 break;
             case 'click-atras':
                 this.simulacionBotonClick('backBtn', "regresando");
+                feedbackMessage = "Regresando.";
                 break;
             case 'click-borrar':
                 this.simulacionBotonClick('deleteBtn', "borrando");
+                feedbackMessage = "Borrando.";
                 break;
             case 'click-next':
                 this.simulacionBotonClick('carouselNext', "mostrando siguiente imagen");
+                feedbackMessage = "Mostrando siguiente imagen.";
                 break;
             case 'click-prev':
                 this.simulacionBotonClick('carouselPrev', "imagen anterior");
+                feedbackMessage = "Mostrando imagen anterior.";
                 break;
             case 'click-gestos':
                 this.simulacionBotonClick('gestoStartBtn', "iniciando camara");
+                feedbackMessage = "Iniciando cámara para gestos.";
                 break;
             case 'click-gestos-d':
                 this.simulacionBotonClick('gestoStopBtn', "deteniendo camara");
+                feedbackMessage = "Deteniendo cámara para gestos.";
                 break;
             case 'click-gestos-vos':
                 this.simulacionBotonClick('backToVoiceBtn', "volviendo a control de vos");
+                feedbackMessage = "Volviendo a control de voz.";
                 break;
             case 'click-comand':
                 this.simulacionBotonClick('tabComandos', "mostrar comandos");
+                feedbackMessage = "Mostrando comandos.";
                 break;
             case 'click-probar':
                 this.simulacionBotonClick('tabProbarComandos', "probar comandos");
+                feedbackMessage = "Probando comandos.";
                 break;
             case 'click-confi':
-                this.simulacionBotonClick('tabConfiguracion', "configuracion");
+                this.simulacionBotonClick('tabConfiguracion', "configuración");
+                feedbackMessage = "Accediendo a configuración.";
                 break;
             case 'click-object':
                 this.simulacionBotonClick('selectImagen', "seleccionar imagen");
+                feedbackMessage = "Seleccionar imagen para detección de objetos.";
                 break;
             case 'click-object-d':
                 this.simulacionBotonClick('detectButton', "detectando objetos");
+                feedbackMessage = "Detectando objetos.";
                 break;
             case 'click-back-o':
                 this.simulacionBotonClick('objectbackBtn', "volviendo");
+                feedbackMessage = "Volviendo a detección de objetos.";
                 break;
             case 'click-borrar-i':
                 this.simulacionBotonClick('objectdeleteBtn', "borrando");
+                feedbackMessage = "Borrando imagen.";
                 break;
             default:
                 console.warn("Acción no reconocida:", action);
-                this.showErrorNotification(`Acción de voz no configurada: "${action}"`);
+                feedbackMessage = `Acción de voz no configurada: "${action}"`;
+                this.showErrorNotification(feedbackMessage);
                 break;
         }
+
+        
+        if (feedbackMessage && !['stop', 'start', 'login', 'scroll_down', 'scroll_up'].includes(action)) {
+            this.speak(feedbackMessage);
+        }
     }
+
     simulacionBotonClick(buttonId, feedbackMessage = "Activando botón...") {
         this.showFeedbackNotification(feedbackMessage);
+        this.speak(feedbackMessage);
         const button = document.getElementById(buttonId);
         if (button) {
-            button.click(); 
+            button.click();
             console.log(`Clic simulado en el botón con ID: ${buttonId}`);
         } else {
             console.warn(`Botón con ID "${buttonId}" no encontrado.`);
-            this.showErrorNotification(`Botón "${buttonId}" no encontrado.`);
+            const errorMessage = `Botón "${buttonId}" no encontrado.`;
+            this.showErrorNotification(errorMessage);
+            this.speak(errorMessage);
         }
     }
 
@@ -314,52 +366,56 @@ class VoiceRecognition {
     navigateTo(url) {
         if (url) {
             window.location.href = url;
+            this.speak(`Navegando a ${url.split('/').pop().replace('.html', '').replace('-', ' ')}`);
         } else {
             console.error("URL de navegación no definida.");
-            this.showErrorNotification("No se pudo navegar a la página solicitada.");
+            const errorMessage = "No se pudo navegar a la página solicitada.";
+            this.showErrorNotification(errorMessage);
+            this.speak(errorMessage);
         }
     }
 
     handleLogout() {
-    const logoutUrl = window.voiceConfig.actions.logout; 
-    if (logoutUrl) {
+        const logoutUrl = window.voiceConfig.actions.logout;
+        if (logoutUrl) {
+            const form = document.createElement('form');
+            form.action = logoutUrl;
+            form.method = 'POST';
 
-        const form = document.createElement('form');
-        form.action = logoutUrl;
-        form.method = 'POST'; 
-
-        
-        const csrfToken = document.querySelector('meta[name="csrf-token"]');
-        if (csrfToken) {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = '_token';
-            input.value = csrfToken.content;
-            form.appendChild(input);
+            const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            if (csrfToken) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = '_token';
+                input.value = csrfToken.content;
+                form.appendChild(input);
+            } else {
+                console.warn("Meta tag CSRF no encontrado. El logout POST podría fallar.");
+            }
+            document.body.appendChild(form);
+            form.submit();
+            this.speak("Cierre de sesión exitoso.");
         } else {
-            console.warn("Meta tag CSRF no encontrado. El logout POST podría fallar.");
+            console.error("URL de logout no definida.");
+            const errorMessage = "No se pudo realizar el cierre de sesión.";
+            this.showErrorNotification(errorMessage);
+            this.speak(errorMessage);
         }
-        document.body.appendChild(form);
-        form.submit(); 
-    } else {
-        console.error("URL de logout no definida.");
-        this.showErrorNotification("No se pudo realizar el cierre de sesión.");
     }
-}
 
     updateVoiceButtonState(isListening) {
         const voiceBtn = document.getElementById('globalVoiceBtn');
-        const searchVoiceBtn = document.getElementById('searchVoiceBtn'); 
+        const searchVoiceBtn = document.getElementById('searchVoiceBtn');
 
         if (voiceBtn) {
             voiceBtn.innerHTML = isListening
-                ? '<i class="fas fa-microphone-slash"></i>' 
+                ? '<i class="fas fa-microphone-slash"></i>'
                 : '<i class="fas fa-microphone"></i>';
-            
+
             voiceBtn.classList.toggle('btn-danger', isListening);
             voiceBtn.classList.toggle('btn-primary', !isListening);
         }
-        
+
         if (searchVoiceBtn) {
             searchVoiceBtn.classList.toggle('listening', isListening);
         }
@@ -375,7 +431,7 @@ class VoiceRecognition {
         `;
         notification.className = `voice-feedback ${isError ? 'error' : ''}`;
         notification.style.display = 'block';
-        
+
         clearTimeout(this.notificationTimeout);
         this.notificationTimeout = setTimeout(() => {
             notification.style.display = 'none';
@@ -385,33 +441,85 @@ class VoiceRecognition {
     showErrorNotification(message) {
         this.showFeedbackNotification(message, true);
     }
-    scrollPage(direction, scrollAmount = window.innerHeight * 0.5) { 
+
+    scrollPage(direction, scrollAmount = window.innerHeight * 0.5) {
         const currentScrollY = window.scrollY;
         let targetScrollY;
 
         if (direction === 'down') {
             targetScrollY = currentScrollY + scrollAmount;
             this.showFeedbackNotification("Desplazando hacia abajo...");
+            this.speak("Desplazando hacia abajo.");
         } else if (direction === 'up') {
             targetScrollY = currentScrollY - scrollAmount;
             this.showFeedbackNotification("Desplazando hacia arriba...");
+            this.speak("Desplazando hacia arriba.");
         } else {
-            return; 
+            return;
         }
 
-        
         const maxScrollY = document.documentElement.scrollHeight - window.innerHeight;
         targetScrollY = Math.max(0, Math.min(targetScrollY, maxScrollY));
 
         window.scrollTo({
             top: targetScrollY,
-            behavior: 'smooth' 
+            behavior: 'smooth'
         });
+    }
+    
+    speak(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = this.recognition.lang;
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+
+            const voices = this.speechSynth.getVoices();
+            const esVoice = voices.find(voice => voice.lang === 'es-ES' || voice.lang === 'es_ES');
+            if (esVoice) {
+                utterance.voice = esVoice;
+            }
+
+           
+            this.isSpeaking = true;
+
+            if (this.isListening) {
+                this.recognition.stop();
+                console.log("Reconocimiento detenido temporalmente para la síntesis de voz.");
+            }
+
+            utterance.onend = () => {
+                this.isSpeaking = false; 
+                console.log("Síntesis de voz terminada.");
+               
+                if (this.isListening) {
+                    
+                    setTimeout(() => {
+                        if (this.isListening) { 
+                            this.recognition.start();
+                            console.log("Reconocimiento reiniciado después de la síntesis de voz.");
+                        }
+                    }, 200); 
+                }
+            };
+
+            utterance.onerror = (event) => {
+                console.error("Error en la síntesis de voz:", event);
+                this.isSpeaking = false; 
+                if (this.isListening) {
+                    this.recognition.start(); 
+                }
+            };
+
+            this.speechSynth.cancel(); 
+            this.speechSynth.speak(utterance);
+        } else {
+            console.warn("API de Text-to-Speech no soportada por este navegador.");
+        }
     }
 }
 
 
-// Inicialización segura
 document.addEventListener('DOMContentLoaded', () => {
     try {
         if (!window.voiceRecognition) {
@@ -419,6 +527,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } catch (error) {
         console.error("Error al inicializar la instancia de VoiceRecognition en DOMContentLoaded:", error);
-        
     }
 });

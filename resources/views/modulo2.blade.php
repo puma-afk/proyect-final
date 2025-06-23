@@ -450,7 +450,7 @@
         </div>
         
         <div class="navigation">
-            <button class="nav-btn active" id="voiceControlBtn">Comandos de Voz</button>
+            <button onclick="window.location.href='{{ route('perfil') }}'"class="nav-btn active" id="voiceControlBtn">volver a inicio</button>
             <button onclick="window.location.href='{{ route('operacion1') }}'" class="nav-btn" id="gestureControlBtn">
                 Control de Gestos
             </button> 

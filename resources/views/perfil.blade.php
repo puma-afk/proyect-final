@@ -392,8 +392,19 @@
         .title-button i {
             margin-right: 10px;
         }
+        .module-image {
+    width: 80px;       
+    height: 80px;      
+    object-fit: cover; 
+    border-radius: 5%; 
+    margin: 0 auto;    
+    display: block;    
+   }
+   .module-image {
+    border: 2px solid #f0f0f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
     </style>
-    
 </head>
 <body>
 
@@ -504,16 +515,16 @@
                     <button onclick="window.location.href='{{ route('modulo2') }}'" class="title-button" id="carouselTitle2">
                         <i class="fas fa-microphone"></i> modulo 2
                     </button>
-                    <p>admistracion de comandos de vos </p>
+                    <p>control de comandos de vos  y gestos</p>
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('images/carousel/imagen3.jpg') }}" class="d-block w-100" alt="Slide 3" id="carouselImage3">
                 <div class="carousel-caption d-none d-md-block">
-                    <button onclick="window.location.href='{{ route('operacion3') }}'" class="title-button" id="carouselTitle3">
-                        <i class="fas fa-chart-bar"></i> titulo
+                    <button onclick="window.location.href='{{ route('modulo4') }}'" class="title-button" id="carouselTitle3">
+                        <i class="fas fa-chart-bar"></i> modulo 4
                     </button>
-                    <p>Descripción </p>
+                    <p>reconocimiento de objetos  en una foto</p>
                 </div>
             </div>
         </div>
@@ -535,34 +546,37 @@
         <div class="row text-center">
             <div class="col-md-4 mb-4">
                 <div class="feature-card card h-100 p-3">
-                    <div class="card-body">
+                    <div class="card-body "> 
                         <button onclick="window.location.href='{{ route('modulo1') }}'" class="icon-text justify-content-center title-button" id="featureButton1">
                             <i class="fas fa-check-circle"></i>
-                            <span>TITULO</span>
+                            <span>Modulo 1</span>
                         </button>
-                        <p class="card-text mt-3">Descripción .</p>
+                        <p class="card-text mt-3">reconocimiento de personas dentro de una foto</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 mb-4">
                 <div class="feature-card card h-100 p-3">
+                    
                     <div class="card-body">
+                         
                         <button onclick="window.location.href='{{ route('modulo2') }}'" class="icon-text justify-content-center title-button" id="featureButton2">
                             <i class="fas fa-handshake"></i>
-                            <span>TITULO</span>
+                            <span>control de vos</span>
                         </button>
-                        <p class="card-text mt-3">Explicación </p>
+                        <p class="card-text mt-3">admintracion de comandos de vos y gestos</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 mb-4">
                 <div class="feature-card card h-100 p-3">
+                    
                     <div class="card-body">
-                        <button onclick="window.location.href='{{ route('operacion3') }}'" class="icon-text justify-content-center title-button" id="featureButton3">
+                        <button onclick="window.location.href='{{ route('modulo4') }}'" class="icon-text justify-content-center title-button" id="featureButton3">
                             <i class="fas fa-lightbulb"></i>
-                            <span>TITULO</span>
+                            <span>Modulo 4</span>
                         </button>
-                        <p class="card-text mt-3">Información </p>
+                        <p class="card-text mt-3">deteccion de objetos en una foto </p>
                     </div>
                 </div>
             </div>
