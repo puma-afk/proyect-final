@@ -1,3 +1,12 @@
+Intalar lo que esta en requeriments.txt para el uso de la carpeta Python
+pip install -r requirements.txt
+Usar python 3.10.9
+En los archivos donde se llama a los scripts python en ColaController.php->funcion procesar()->específicamente en la variable $python y
+en DeteccionObjetoService.php->invocarScriptPython->variable $pythonBin,
+CAMBIAR a la ruta donde tenga python instalado
+
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
