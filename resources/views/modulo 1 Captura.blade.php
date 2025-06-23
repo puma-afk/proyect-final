@@ -117,6 +117,10 @@
             <div id="statusDisplay" class="status-display">
                 Personas Detectadas: <span id="detectionCount"><strong>{{ session('cantidad') }}</strong></span>
             </div>
+            <a href="{{ route('reportes') }}" class="btn btn-primary" style="margin-bottom: 1em; display: inline-block;">
+                Ver Reportes
+            </a>
+
             <form id="deleteForm" action="{{ route('borrar.todo') }}" method="POST" style="margin-top: 1em;">
                 @csrf
                 <button type="submit" id="deleteBtn" class="btn btn-danger">Borrar todo</button>
