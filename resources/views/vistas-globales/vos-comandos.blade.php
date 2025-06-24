@@ -20,7 +20,7 @@ window.voiceConfig = {
         'modulo 1|primera lección|modulo uno': 'module1',
         'modulo 2|segunda lección|modulo dos': 'vos',
         'control de gestos|ir a gestos|gestos': 'gestos',
-        'modulo 4|modulo cuatro': 'module4',
+        'ir a modulo 4|modulo cuatro': 'module4',
         'ayuda|informacion de ayuda|mostrar ayuda': 'ayuda',
         'ver mi perfil|ir a perfil|perfil': 'miperfil',
         'detener|desactivar micrófono|silenciar': 'stop',

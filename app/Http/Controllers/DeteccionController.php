@@ -46,7 +46,7 @@ class DeteccionController extends Controller
         //VERIFICAMOS Y ENCOLAMOS
         try{
             $priorityQueue= new PriorityQueue();
-            if(($priorityQueue->count())>10){
+            if(($priorityQueue->count())>=10){
                 return back()->withErrors(['error' => 'La cola ya tiene 10 imágenes.']);
             }
 
