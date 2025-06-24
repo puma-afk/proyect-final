@@ -66,7 +66,6 @@ class ColaController extends Controller
             $dom->loadXML($xml->asXML());
             $dom->save($historialRuta);
 
-            $imagenesProcesadas = [];
 
             $imagenesProcesadas = [];
             if (file_exists($historialRuta)) {

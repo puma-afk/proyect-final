@@ -19,12 +19,12 @@ if not resultados or not resultados[0].boxes:
     print(json.dumps({"personas_detectadas": 0}))
     sys.exit(0)
 
-# Contar personas (clase 0)
+
 personas_detectadas = sum(1 for c in resultados[0].boxes.cls if int(c) == 0)
 
-# Dibujar resultados y guardar exactamente en la ruta solicitada
+
 img_con_detecciones = resultados[0].plot()
 cv2.imwrite(salida_path, img_con_detecciones)
 
-# Imprimir JSON limpio
+
 print(json.dumps({"personas_detectadas": personas_detectadas}))
