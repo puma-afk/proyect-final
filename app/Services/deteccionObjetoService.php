@@ -115,7 +115,7 @@ class DeteccionObjetoService
 
 
         if (empty($output)) {
-            throw new \Exception("El script no devolvió salida. Revisa el log.");
+            throw new \Exception("El script no devolvió salida.");
         }
 
         $lineas = explode("\n", trim($output));

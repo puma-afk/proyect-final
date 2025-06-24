@@ -2,7 +2,7 @@ import argparse
 import cv2
 import os
 import sys
-from ultralytics import YOLO  # YOLOv8
+from ultralytics import YOLO  
 
 def main():
     parser = argparse.ArgumentParser(description="Detección de un objeto con YOLOv8")
@@ -12,7 +12,7 @@ def main():
     
     args = parser.parse_args()
 
-    # Verifica que la imagen existe
+    
     if not os.path.isfile(args.image):
         print(f"ERROR: La imagen no existe en la ruta {args.image}")
         sys.exit(1)
@@ -20,15 +20,13 @@ def main():
     # Cargar modelo YOLOv8
     try:
        MODEL_PATH = os.path.join(os.path.dirname(__file__), 'yolov8m.pt')
-       model = YOLO(MODEL_PATH)  # Asegúrate que tienes el modelo en la misma carpeta o da el path correcto
+       model = YOLO(MODEL_PATH) 
     except Exception as e:
         print(f"ERROR: No se pudo cargar el modelo YOLOv8: {e}")
         sys.exit(1)
 
-    # Realizar la predicción
     results = model(args.image)
 
-    # Obtener resultados y filtrar por etiqueta
     detecciones = results[0].boxes
     names = model.names
 
@@ -44,11 +42,9 @@ def main():
             cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
             cv2.putText(image, name, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
 
-    # Guardar imagen procesada
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
     cv2.imwrite(args.output, image)
 
-    # Devuelve el conteo
     print(count)
 
 if __name__ == "__main__":
