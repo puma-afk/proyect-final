@@ -109,8 +109,6 @@ class PriorityQueue implements PriorityQueueInterface
         unset($this->queue[1]);
         $this->num_elements--;
 
-        $this->queue = array_values($this->queue);
-
         $new_queue = [];
         $new_hashmap = [];
         $count=1;
