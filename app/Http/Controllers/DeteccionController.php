@@ -13,7 +13,7 @@ class DeteccionController extends Controller
             //VALIDA IMAGEN SUBIDA
             $imagen = $request->file('imagen');
             if (!$imagen){
-                return back()->withErrors(['No se recibió ninguna imagen.']);
+                return back()->withErrors(['error' =>'No se recibió ninguna imagen.']);
             }
             //MUEVE LAS IMAGENES
             
