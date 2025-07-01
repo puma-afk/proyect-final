@@ -1,8 +1,10 @@
 <?php
 namespace App\Services;
 
+use Exception;
 use Illuminate\Http\Request;
 use App\Utils\AnalizadorInstancia;
+use function PHPUnit\Framework\fileExists;
 
 
 class DeteccionObjetoService
@@ -105,6 +107,10 @@ class DeteccionObjetoService
 
         $rutaScript = "C:\\xampp\\htdocs\\proyect-final\\Python\\detectar_objeto.py";
         $pythonBin = "C:\\Users\\jhosb\\AppData\\Local\\Programs\\Python\\Python310\\python.exe";
+
+        if(!file_exists($rutaScript) || !file_exists($pythonBin)){
+            throw new \Exception("No se encuentra el programa de Py o el del Script de py");
+        }
 
         $rutaAbsolutaImagen = storage_path("app/public/" . $rutaImagen);
 
